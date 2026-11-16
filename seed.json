@@ -1,0 +1,753 @@
+{
+ "schema": {
+  "products": {
+   "label": "상품",
+   "key": "sku",
+   "fields": [
+    {
+     "k": "sku",
+     "l": "상품코드"
+    },
+    {
+     "k": "name",
+     "l": "상품명"
+    },
+    {
+     "k": "category",
+     "l": "분류",
+     "t": "select",
+     "o": [
+      "스탠드",
+      "디오라마",
+      "회전",
+      "특수효과",
+      "소품"
+     ]
+    },
+    {
+     "k": "size",
+     "l": "크기"
+    },
+    {
+     "k": "price",
+     "l": "판매가(원)",
+     "t": "number"
+    },
+    {
+     "k": "status",
+     "l": "판매상태",
+     "t": "select",
+     "o": [
+      "판매중",
+      "일시품절",
+      "판매중지"
+     ]
+    }
+   ]
+  },
+  "inventory": {
+   "label": "재고",
+   "key": "sku",
+   "fields": [
+    {
+     "k": "sku",
+     "l": "상품코드"
+    },
+    {
+     "k": "stock",
+     "l": "현재 재고",
+     "t": "number"
+    },
+    {
+     "k": "safety",
+     "l": "안전 재고",
+     "t": "number"
+    },
+    {
+     "k": "location",
+     "l": "보관 위치"
+    },
+    {
+     "k": "lastIn",
+     "l": "최근 입고일",
+     "t": "date"
+    }
+   ]
+  },
+  "orders": {
+   "label": "주문",
+   "key": "orderId",
+   "fields": [
+    {
+     "k": "orderId",
+     "l": "주문번호"
+    },
+    {
+     "k": "date",
+     "l": "주문일",
+     "t": "date"
+    },
+    {
+     "k": "customer",
+     "l": "주문자"
+    },
+    {
+     "k": "sku",
+     "l": "상품코드"
+    },
+    {
+     "k": "qty",
+     "l": "수량",
+     "t": "number"
+    },
+    {
+     "k": "amount",
+     "l": "결제금액(원)",
+     "t": "number"
+    },
+    {
+     "k": "payment",
+     "l": "결제상태",
+     "t": "select",
+     "o": [
+      "결제완료",
+      "입금대기",
+      "환불완료"
+     ]
+    },
+    {
+     "k": "status",
+     "l": "주문상태",
+     "t": "select",
+     "o": [
+      "주문접수",
+      "제작중",
+      "출고완료",
+      "배송완료",
+      "주문취소"
+     ]
+    }
+   ]
+  },
+  "shipments": {
+   "label": "배송",
+   "key": "orderId",
+   "fields": [
+    {
+     "k": "orderId",
+     "l": "주문번호"
+    },
+    {
+     "k": "courier",
+     "l": "택배사",
+     "t": "select",
+     "o": [
+      "CJ대한통운",
+      "한진택배",
+      "롯데택배",
+      "우체국택배"
+     ]
+    },
+    {
+     "k": "tracking",
+     "l": "송장번호"
+    },
+    {
+     "k": "status",
+     "l": "배송상태",
+     "t": "select",
+     "o": [
+      "출고대기",
+      "집화완료",
+      "배송중",
+      "배송출발",
+      "배송완료"
+     ]
+    },
+    {
+     "k": "location",
+     "l": "현재 위치"
+    },
+    {
+     "k": "updated",
+     "l": "최근 업데이트"
+    },
+    {
+     "k": "eta",
+     "l": "도착 예정일",
+     "t": "date"
+    },
+    {
+     "k": "mode",
+     "l": "진행 방식",
+     "t": "select",
+     "o": [
+      "수동",
+      "자동"
+     ]
+    }
+   ]
+  },
+  "acryl_products": {
+   "label": "아크릴 탭 상품",
+   "key": "code",
+   "fields": [
+    {
+     "k": "code",
+     "l": "버튼 코드"
+    },
+    {
+     "k": "order",
+     "l": "순서",
+     "t": "number"
+    },
+    {
+     "k": "name",
+     "l": "상품 이름"
+    },
+    {
+     "k": "price",
+     "l": "시작가(원)",
+     "t": "number"
+    },
+    {
+     "k": "desc",
+     "l": "한 줄 설명"
+    },
+    {
+     "k": "url",
+     "l": "상품 링크"
+    },
+    {
+     "k": "visible",
+     "l": "표시",
+     "t": "select",
+     "o": [
+      "표시",
+      "숨김"
+     ]
+    }
+   ]
+  }
+ },
+ "settingsDefault": {
+  "title": "아크릴 스탠드 상담",
+  "subtitle": "올댓프린팅 '스탠드/디오라마' 페이지 내용만으로 답해요.",
+  "sourceName": "올댓프린팅 스탠드/디오라마",
+  "sourceUrl": "https://allthatprinting.co.kr/category/%EC%8A%A4%ED%83%A0%EB%93%9C%EB%94%94%EC%98%A4%EB%9D%BC%EB%A7%88/58/",
+  "infoDate": "2026-11-16",
+  "notice": "가격과 품절 여부는 바뀔 수 있어요. 주문 전 사이트에서 꼭 확인하세요.",
+  "rules": "너는 아크릴 스탠드 주문 상담 도우미야.\n반드시 아래 [사이트 정보]에 있는 내용만으로 답해. 지어내지 마.\n정보에 없는 질문이면 \"사이트 정보에 없는 내용이에요. 올댓프린팅에 직접 문의해 주세요.\"라고 답해.\n가격은 \"~원부터\"처럼 시작 가격이라는 점을 꼭 밝히고, 최종 가격은 사이트에서 옵션을 골라 확인하라고 안내해.\n초등학생도 이해할 수 있게 쉬운 한국어로 짧게. 마크다운 기호 없이 줄바꿈으로만 정리해.",
+  "info": "[공통 안내]\n- 1개부터 소량 제작 가능. 다만 1~2개 같은 소량 샘플을 견적팀에 맡기면 개당 최소 10,000원 이상.\n- 사이트에서 주문 가능한 제품·수량은 별도 견적 없음. 대량, 규격 외, 사이트에 없는 상품은 이메일 견적 요청.\n- 배송비 3,000원, 50,000원 이상 구매 시 무료. 1m 넘는 대형이나 깨지기 쉬운 제품은 퀵 출고 요청. 해외배송 가능 상품 있음.\n- 운영시간 평일 09:00~18:00, 점심 12:00~13:00, 주말·공휴일 휴무.\n- 수량 구간: 1~9개(도안 9종 이하), 10~99개(도안 9종 이하, 도안 1종당 10개 이상), 100~499개, 500~999개, 전부 다른 도안(개당). 구간별 도안 수 제한은 상품마다 조금 다름.\n- 수량별 상세 가격표는 사이트에 이미지로만 있어 이 정보에는 없음.\n- 제작 방식: 일반(아크릴 표면에 인쇄), 라미(아크릴 두 장 사이에 인쇄, 인쇄 보호와 고급스러운 느낌).\n- 화이트 인쇄: 컬러 아래 흰색을 깔아 색을 선명하고 불투명하게 함. 없으면 컬러가 비침. 기본은 뒷면 화이트.\n- 낱개 OPP 포장은 개당 100원 추가(자율형, 렌티큘러). 조립형, 디오라마, 회전 스탠드는 낱개 OPP 포장으로 출고.\n[파일 보내는 법]\n- 일러스트레이터나 무료 '올댓에디터'로 만든 PDF 업로드. 같은 자재·크기의 여러 도안은 PDF 하나로. 10MB 이하.\n- 10MB 넘으면 all_that_cs@naver.com 으로 메일(주문번호, 주문자명 필수).\n- 포토샵, 클립스튜디오 파일이나 직접 작업이 어려우면 '도안작업의뢰'를 추가 구매(상품별 10,000~30,000원). 도안 종류마다 1개씩. 파일 형식 ai, jpg, png, psd, zip.\n- 선 두께는 0.3mm 이상, 도안은 1:1 비율. 외곽 여백은 약 2~3mm 권장(너무 얇으면 깨지거나 잘 안 보임).\n- 받침에 닿는 아랫면이 좁거나 기울면 혼자 서기 어려움.\n- 주문 데이터는 3개월 보관. 같은 디자인 재주문은 '파일변경없음' 선택.\n[상품별 상세]\n- 자율형: 투명아크릴 2.7T(3T), 라미 3T. 일반 크기(cm) 35x50~150x150 여러 종, 라미 30x50~140x140 여러 종. 받침: 없음/투명 3T·5T/인쇄 3T/라미인쇄 3T. 받침 모양 직접제작·원형·사각·육각. 양면 인쇄는 배송메시지로 요청하면 추가금 안내.\n- 조립형: 투명 3T(일반/라미). 크기 95x95, 150x75, 150x100, 150x150mm. 단면/양면 선택. 파츠 추가 개당 200원(최대 4개). 판 하나에 넣을 수 있는 그림 수 제한 있음(일반 150x150 이상 6개, 미만 4개).\n- 디오라마 3면: 투명 3T(일반/라미). 한 면 크기 4, 5, 6, 7, 8.5cm. 조립형(끼우는 방식)과 고정형(꽂는 방식). 5, 7, 8.5cm는 판 2개로 제작.\n- 회전 캐릭터: 투명 3T. 크기 M 143x143mm, L 135x270mm. 앞뒤 같은 그림/다른 그림 선택. 사이트 자료실 가이드 파일로 제작해야 제대로 돎.\n- 렌티큘러: 렌티큘러 필름 + 투명 3T 라미. 크기 30x50~140x140mm 여러 종. 소량 주문은 제작 기간 최대 14일 걸릴 수 있음.\n[없는 정보] 대부분 상품의 정확한 제작 기간, 수량별 상세 단가, 무게. 일부 상품은 확인 당시 품절 표시가 있었을 수 있음."
+ },
+ "data": {
+  "products": [
+   {
+    "sku": "AC-001",
+    "name": "투명 아크릴 스탠드 S",
+    "category": "스탠드",
+    "size": "50x70mm",
+    "price": 3500,
+    "status": "판매중"
+   },
+   {
+    "sku": "AC-002",
+    "name": "투명 아크릴 스탠드 M",
+    "category": "스탠드",
+    "size": "70x100mm",
+    "price": 4500,
+    "status": "판매중"
+   },
+   {
+    "sku": "AC-003",
+    "name": "왕스탠드 L",
+    "category": "스탠드",
+    "size": "세로 300mm",
+    "price": 12000,
+    "status": "판매중"
+   },
+   {
+    "sku": "AC-004",
+    "name": "라미 아크릴 스탠드",
+    "category": "스탠드",
+    "size": "70x100mm",
+    "price": 6000,
+    "status": "판매중"
+   },
+   {
+    "sku": "AC-005",
+    "name": "디오라마 3면 스탠드",
+    "category": "디오라마",
+    "size": "한 면 70mm",
+    "price": 9000,
+    "status": "판매중"
+   },
+   {
+    "sku": "AC-006",
+    "name": "회전 캐릭터 스탠드",
+    "category": "회전",
+    "size": "143x143mm",
+    "price": 13000,
+    "status": "판매중"
+   },
+   {
+    "sku": "AC-007",
+    "name": "렌티큘러 스탠드",
+    "category": "특수효과",
+    "size": "70x100mm",
+    "price": 7500,
+    "status": "판매중"
+   },
+   {
+    "sku": "AC-008",
+    "name": "홀로그램 스탠드",
+    "category": "특수효과",
+    "size": "70x100mm",
+    "price": 6500,
+    "status": "일시품절"
+   },
+   {
+    "sku": "AC-009",
+    "name": "아크릴 포토프롭",
+    "category": "소품",
+    "size": "100x150mm",
+    "price": 5000,
+    "status": "판매중"
+   },
+   {
+    "sku": "AC-010",
+    "name": "아크릴 안경 거치대",
+    "category": "소품",
+    "size": "120x90mm",
+    "price": 18000,
+    "status": "판매중지"
+   }
+  ],
+  "inventory": [
+   {
+    "sku": "AC-001",
+    "stock": 120,
+    "safety": 30,
+    "location": "A-01",
+    "lastIn": "2026-11-10"
+   },
+   {
+    "sku": "AC-002",
+    "stock": 85,
+    "safety": 30,
+    "location": "A-02",
+    "lastIn": "2026-11-10"
+   },
+   {
+    "sku": "AC-003",
+    "stock": 6,
+    "safety": 10,
+    "location": "B-01",
+    "lastIn": "2026-10-28"
+   },
+   {
+    "sku": "AC-004",
+    "stock": 40,
+    "safety": 20,
+    "location": "A-03",
+    "lastIn": "2026-11-05"
+   },
+   {
+    "sku": "AC-005",
+    "stock": 18,
+    "safety": 15,
+    "location": "B-02",
+    "lastIn": "2026-11-03"
+   },
+   {
+    "sku": "AC-006",
+    "stock": 3,
+    "safety": 10,
+    "location": "B-03",
+    "lastIn": "2026-10-20"
+   },
+   {
+    "sku": "AC-007",
+    "stock": 25,
+    "safety": 15,
+    "location": "C-01",
+    "lastIn": "2026-11-07"
+   },
+   {
+    "sku": "AC-008",
+    "stock": 0,
+    "safety": 10,
+    "location": "C-02",
+    "lastIn": "2026-10-15"
+   },
+   {
+    "sku": "AC-009",
+    "stock": 60,
+    "safety": 20,
+    "location": "C-03",
+    "lastIn": "2026-11-01"
+   },
+   {
+    "sku": "AC-010",
+    "stock": 12,
+    "safety": 5,
+    "location": "D-01",
+    "lastIn": "2026-09-30"
+   }
+  ],
+  "orders": [
+   {
+    "orderId": "MA-1001",
+    "date": "2026-11-02",
+    "customer": "김*준",
+    "sku": "AC-001",
+    "qty": 5,
+    "amount": 17500,
+    "payment": "결제완료",
+    "status": "배송완료"
+   },
+   {
+    "orderId": "MA-1002",
+    "date": "2026-11-04",
+    "customer": "이*서",
+    "sku": "AC-005",
+    "qty": 1,
+    "amount": 9000,
+    "payment": "결제완료",
+    "status": "배송완료"
+   },
+   {
+    "orderId": "MA-1003",
+    "date": "2026-11-09",
+    "customer": "박*연",
+    "sku": "AC-006",
+    "qty": 2,
+    "amount": 26000,
+    "payment": "결제완료",
+    "status": "출고완료"
+   },
+   {
+    "orderId": "MA-1004",
+    "date": "2026-11-10",
+    "customer": "최*우",
+    "sku": "AC-002",
+    "qty": 10,
+    "amount": 45000,
+    "payment": "결제완료",
+    "status": "출고완료"
+   },
+   {
+    "orderId": "MA-1005",
+    "date": "2026-11-11",
+    "customer": "정*아",
+    "sku": "AC-007",
+    "qty": 3,
+    "amount": 22500,
+    "payment": "결제완료",
+    "status": "출고완료"
+   },
+   {
+    "orderId": "MA-1006",
+    "date": "2026-11-12",
+    "customer": "강*호",
+    "sku": "AC-004",
+    "qty": 4,
+    "amount": 24000,
+    "payment": "결제완료",
+    "status": "제작중"
+   },
+   {
+    "orderId": "MA-1007",
+    "date": "2026-11-13",
+    "customer": "윤*진",
+    "sku": "AC-003",
+    "qty": 1,
+    "amount": 12000,
+    "payment": "결제완료",
+    "status": "제작중"
+   },
+   {
+    "orderId": "MA-1008",
+    "date": "2026-11-14",
+    "customer": "한*민",
+    "sku": "AC-009",
+    "qty": 2,
+    "amount": 10000,
+    "payment": "입금대기",
+    "status": "주문접수"
+   },
+   {
+    "orderId": "MA-1009",
+    "date": "2026-11-15",
+    "customer": "오*린",
+    "sku": "AC-001",
+    "qty": 20,
+    "amount": 70000,
+    "payment": "결제완료",
+    "status": "주문접수"
+   },
+   {
+    "orderId": "MA-1010",
+    "date": "2026-11-08",
+    "customer": "서*훈",
+    "sku": "AC-008",
+    "qty": 2,
+    "amount": 13000,
+    "payment": "환불완료",
+    "status": "주문취소"
+   },
+   {
+    "orderId": "MA-1011",
+    "date": "2026-11-16",
+    "customer": "가상 고객",
+    "sku": "AS-09",
+    "qty": 1,
+    "amount": 14600,
+    "payment": "결제완료",
+    "status": "출고완료",
+    "virtual": true
+   }
+  ],
+  "shipments": [
+   {
+    "orderId": "MA-1001",
+    "courier": "CJ대한통운",
+    "tracking": "6012-3456-7801",
+    "status": "배송완료",
+    "location": "서울 마포구 배송지",
+    "updated": "2026-11-05 14:20",
+    "eta": "2026-11-05"
+   },
+   {
+    "orderId": "MA-1002",
+    "courier": "한진택배",
+    "tracking": "4210-8877-1102",
+    "status": "배송완료",
+    "location": "부산 해운대구 배송지",
+    "updated": "2026-11-07 11:05",
+    "eta": "2026-11-07"
+   },
+   {
+    "orderId": "MA-1003",
+    "courier": "CJ대한통운",
+    "tracking": "6012-3456-7803",
+    "status": "배송출발",
+    "location": "경기 성남 분당 대리점",
+    "updated": "2026-11-16 08:40",
+    "eta": "2026-11-16"
+   },
+   {
+    "orderId": "MA-1004",
+    "courier": "롯데택배",
+    "tracking": "2330-1122-4404",
+    "status": "배송중",
+    "location": "대전 허브터미널",
+    "updated": "2026-11-15 22:10",
+    "eta": "2026-11-17"
+   },
+   {
+    "orderId": "MA-1005",
+    "courier": "우체국택배",
+    "tracking": "6891-0055-0505",
+    "status": "집화완료",
+    "location": "서울 중랑우체국",
+    "updated": "2026-11-15 18:30",
+    "eta": "2026-11-18"
+   },
+   {
+    "orderId": "MA-1006",
+    "courier": "CJ대한통운",
+    "tracking": "미발급",
+    "status": "출고대기",
+    "location": "제작 중",
+    "updated": "2026-11-12 10:00",
+    "eta": "2026-11-19"
+   },
+   {
+    "orderId": "MA-1007",
+    "courier": "한진택배",
+    "tracking": "미발급",
+    "status": "출고대기",
+    "location": "제작 중",
+    "updated": "2026-11-13 10:00",
+    "eta": "2026-11-20"
+   },
+   {
+    "orderId": "MA-1008",
+    "courier": "CJ대한통운",
+    "tracking": "미발급",
+    "status": "출고대기",
+    "location": "입금 확인 전",
+    "updated": "2026-11-14 09:00",
+    "eta": "2026-11-21"
+   },
+   {
+    "orderId": "MA-1009",
+    "courier": "롯데택배",
+    "tracking": "미발급",
+    "status": "출고대기",
+    "location": "주문 확인 중",
+    "updated": "2026-11-15 16:00",
+    "eta": "2026-11-21"
+   },
+   {
+    "orderId": "MA-1010",
+    "courier": "우체국택배",
+    "tracking": "미발급",
+    "status": "출고대기",
+    "location": "주문 취소로 배송 없음",
+    "updated": "2026-11-08 15:00",
+    "eta": "2026-11-08"
+   },
+   {
+    "orderId": "MA-1011",
+    "courier": "CJ대한통운",
+    "tracking": "794795625508",
+    "status": "배송중",
+    "location": "대전 허브터미널",
+    "updated": "2026-11-16 11:20",
+    "eta": "2026-11-19",
+    "mode": "자동",
+    "createdMs": 1794795284187
+   }
+  ],
+  "acryl_products": [
+   {
+    "code": "AS-01",
+    "order": 1,
+    "name": "자율형 아크릴 스탠드 (등신대)",
+    "price": 1300,
+    "desc": "모양을 자유롭게 만드는 기본 아크릴 스탠드.",
+    "url": "https://allthatprinting.co.kr/product/%EC%95%84%ED%81%AC%EB%A6%B4%EC%8A%A4%ED%83%A0%EB%93%9C-%EC%9E%90%EC%9C%A8%ED%98%95-%EC%8A%A4%ED%83%A0%EB%93%9C-%ED%88%AC%EB%AA%85%EC%95%84%ED%81%AC%EB%A6%B4-%EB%93%B1%EC%8B%A0%EB%8C%80-%EC%A3%BC%EB%AC%B8-%EC%A0%9C%EC%9E%91/186/category/58/display/1/",
+    "visible": "표시"
+   },
+   {
+    "code": "AS-02",
+    "order": 2,
+    "name": "판형태 조립형 아크릴 스탠드",
+    "price": 4000,
+    "desc": "평면 판에서 떼어 직접 조립하는 DIY형.",
+    "url": "https://allthatprinting.co.kr/product/%EC%A3%BC%EB%AC%B8%EC%A0%9C%EC%9E%91-%ED%8C%90%ED%98%95%ED%83%9C-%EC%A1%B0%EB%A6%BD%ED%98%95-%EC%95%84%ED%81%AC%EB%A6%B4-%EC%8A%A4%ED%83%A0%EB%93%9C/69/category/58/display/1/",
+    "visible": "표시"
+   },
+   {
+    "code": "AS-03",
+    "order": 3,
+    "name": "포토프롭 아크릴 토퍼",
+    "price": 2000,
+    "desc": "사진 찍을 때 들거나 꽂는 아크릴 장식.",
+    "url": "https://allthatprinting.co.kr/product/%ED%8F%AC%ED%86%A0%ED%94%84%EB%A1%AD-%EC%95%84%ED%81%AC%EB%A6%B4%EA%B5%BF%EC%A6%88-%EC%A3%BC%EB%AC%B8%EC%A0%9C%EC%9E%91-%EC%95%84%ED%81%AC%EB%A6%B4%ED%86%A0%ED%8D%BC-%EC%97%AC%ED%96%89%ED%86%A0%ED%8D%BC-%ED%8F%AC%ED%86%A0%ED%94%84%EB%9E%8D-%ED%8F%AC%ED%86%A0%ED%94%BD-%EB%8D%B0%EC%BD%94%ED%94%BD/72/category/58/display/1/",
+    "visible": "표시"
+   },
+   {
+    "code": "AS-04",
+    "order": 4,
+    "name": "홀로그램 아크릴 스탠드",
+    "price": 1900,
+    "desc": "깨진유리, 격자무늬 홀로그램 효과.",
+    "url": "https://allthatprinting.co.kr/product/%EC%95%84%ED%81%AC%EB%A6%B4%EC%8A%A4%ED%83%A0%EB%93%9C-%ED%99%80%EB%A1%9C%EA%B7%B8%EB%9E%A8-%EA%B9%A8%EC%A7%84%EC%9C%A0%EB%A6%AC-%EA%B2%A9%EC%9E%90%EB%AC%B4%EB%8A%AC-%EC%A3%BC%EB%AC%B8-%EC%A0%9C%EC%9E%91/1397/category/58/display/1/",
+    "visible": "표시"
+   },
+   {
+    "code": "AS-05",
+    "order": 5,
+    "name": "왕스탠드 (세로 30cm)",
+    "price": 5700,
+    "desc": "세로 30cm 큰 사이즈 스탠드.",
+    "url": "https://allthatprinting.co.kr/product/%EC%95%84%ED%81%AC%EB%A6%B4-%EC%8A%A4%ED%83%A0%EB%93%9C-%EB%8D%94%ED%81%B0%EC%8A%A4%ED%83%A0%EB%93%9C-%EC%99%95%EC%8A%A4%ED%83%A0%EB%93%9C-%EC%95%84%ED%81%AC%EB%A6%B4%EB%93%B1%EC%8B%A0%EB%8C%80-%EC%A3%BC%EB%AC%B8-%EC%A0%9C%EC%9E%91-%EC%84%B8%EB%A1%9C30cm/1452/category/58/display/1/",
+    "visible": "표시"
+   },
+   {
+    "code": "AS-06",
+    "order": 6,
+    "name": "아크릴 디오라마 3면 스탠드",
+    "price": 4200,
+    "desc": "양옆과 바닥 3면으로 작은 공간을 꾸미는 굿즈.",
+    "url": "https://allthatprinting.co.kr/product/%EC%95%84%ED%81%AC%EB%A6%B4-%EB%94%94%EC%98%A4%EB%9D%BC%EB%A7%88-3%EB%A9%B4-%EC%8A%A4%ED%83%A0%EB%93%9C-%EC%A1%B0%EB%A6%BD%ED%98%95%EA%B3%A0%EC%A0%95%ED%98%95/1818/category/58/display/1/",
+    "visible": "표시"
+   },
+   {
+    "code": "AS-07",
+    "order": 7,
+    "name": "회전 캐릭터 스탠드",
+    "price": 8200,
+    "desc": "캐릭터가 빙글빙글 도는 조립형 스탠드.",
+    "url": "https://allthatprinting.co.kr/product/%ED%9A%8C%EC%A0%84-%EC%BA%90%EB%A6%AD%ED%84%B0-%EC%8A%A4%ED%83%A0%EB%93%9C/1927/category/58/display/1/",
+    "visible": "표시"
+   },
+   {
+    "code": "AS-08",
+    "order": 8,
+    "name": "돌려돌려 스핀 아크릴 스탠드",
+    "price": 1600,
+    "desc": "돌려서 노는 스핀형 스탠드.",
+    "url": "https://allthatprinting.co.kr/product/%EB%8F%8C%EB%A0%A4%EB%8F%8C%EB%A0%A4-%EC%8A%A4%ED%95%80-%EC%95%84%ED%81%AC%EB%A6%B4-%EC%8A%A4%ED%83%A0%EB%93%9C/2461/category/58/display/1/",
+    "visible": "표시"
+   },
+   {
+    "code": "AS-09",
+    "order": 9,
+    "name": "아크릴 안경 스탠드 거치대",
+    "price": 14600,
+    "desc": "안경을 올려두는 아크릴 거치대.",
+    "url": "https://allthatprinting.co.kr/product/%EC%95%84%ED%81%AC%EB%A6%B4-%EC%95%88%EA%B2%BD-%EC%8A%A4%ED%83%A0%EB%93%9C-%EA%B1%B0%EC%B9%98%EB%8C%80/3072/category/58/display/1/",
+    "visible": "표시"
+   },
+   {
+    "code": "AS-10",
+    "order": 10,
+    "name": "렌티큘러 아크릴 스탠드",
+    "price": 1900,
+    "desc": "보는 각도에 따라 그림이 바뀌는 스탠드.",
+    "url": "https://allthatprinting.co.kr/product/%EB%A0%8C%ED%8B%B0%ED%81%98%EB%9F%AC-%EC%95%84%ED%81%AC%EB%A6%B4-%EC%8A%A4%ED%83%A0%EB%93%9C/3190/category/58/display/1/",
+    "visible": "표시"
+   },
+   {
+    "code": "AS-11",
+    "order": 11,
+    "name": "하프미러 아크릴 스탠드",
+    "price": 1900,
+    "desc": "반쯤 비치는 거울 느낌의 아크릴.",
+    "url": "https://allthatprinting.co.kr/product/%EC%95%84%ED%81%AC%EB%A6%B4-%EC%8A%A4%ED%83%A0%EB%93%9C-%ED%95%98%ED%94%84%EB%AF%B8%EB%9F%AC-%EB%93%B1%EC%8B%A0%EB%8C%80-%EC%A3%BC%EB%AC%B8-%EC%A0%9C%EC%9E%91/3839/category/58/display/1/",
+    "visible": "표시"
+   },
+   {
+    "code": "AS-12",
+    "order": 12,
+    "name": "금박·은박 아크릴 스탠드",
+    "price": 1900,
+    "desc": "금박이나 은박으로 반짝이는 효과.",
+    "url": "https://allthatprinting.co.kr/product/%EA%B8%88%EB%B0%95-%EC%9D%80%EB%B0%95-%EC%95%84%ED%81%AC%EB%A6%B4-%EC%8A%A4%ED%83%A0%EB%93%9C-%EC%95%84%ED%81%AC%EB%A6%B4%EB%93%B1%EC%8B%A0%EB%8C%80-%EC%A3%BC%EB%AC%B8-%EC%A0%9C%EC%9E%91/4251/category/58/display/1/",
+    "visible": "표시"
+   },
+   {
+    "code": "AS-13",
+    "order": 13,
+    "name": "아크릴 컵라면 덮개",
+    "price": 1500,
+    "desc": "컵라면 뚜껑을 눌러 주는 아크릴 굿즈.",
+    "url": "https://allthatprinting.co.kr/product/%EC%95%84%ED%81%AC%EB%A6%B4-%EC%BB%B5%EB%9D%BC%EB%A9%B4-%EB%8D%AE%EA%B0%9C-%EB%9D%BC%EB%A9%B4-%EB%88%84%EB%93%A4-%EC%8A%A4%ED%86%A0%ED%8D%BC-%EC%A3%BC%EB%AC%B8-%EC%A0%9C%EC%9E%91/4728/category/58/display/1/",
+    "visible": "표시"
+   },
+   {
+    "code": "AS-14",
+    "order": 14,
+    "name": "매직미러 아크릴 스탠드",
+    "price": 1900,
+    "desc": "매직미러 효과가 들어간 스탠드.",
+    "url": "https://allthatprinting.co.kr/product/%EB%A7%A4%EC%A7%81%EB%AF%B8%EB%9F%AC-%EC%95%84%ED%81%AC%EB%A6%B4-%EC%8A%A4%ED%83%A0%EB%93%9C/5801/category/58/display/1/",
+    "visible": "표시"
+   }
+  ],
+  "settings": {
+   "title": "아크릴 스탠드 상담",
+   "subtitle": "올댓프린팅 '스탠드/디오라마' 페이지 내용만으로 답해요.",
+   "sourceName": "올댓프린팅 스탠드/디오라마",
+   "sourceUrl": "https://allthatprinting.co.kr/category/%EC%8A%A4%ED%83%A0%EB%93%9C%EB%94%94%EC%98%A4%EB%9D%BC%EB%A7%88/58/",
+   "infoDate": "2026-11-16",
+   "notice": "가격과 품절 여부는 바뀔 수 있어요. 주문 전 사이트에서 꼭 확인하세요.",
+   "rules": "너는 아크릴 스탠드 주문 상담 도우미야.\n반드시 아래 [사이트 정보]에 있는 내용만으로 답해. 지어내지 마.\n정보에 없는 질문이면 \"사이트 정보에 없는 내용이에요. 올댓프린팅에 직접 문의해 주세요.\"라고 답해.\n가격은 \"~원부터\"처럼 시작 가격이라는 점을 꼭 밝히고, 최종 가격은 사이트에서 옵션을 골라 확인하라고 안내해.\n초등학생도 이해할 수 있게 쉬운 한국어로 짧게. 마크다운 기호 없이 줄바꿈으로만 정리해.",
+   "info": "[공통 안내]\n- 1개부터 소량 제작 가능. 다만 1~2개 같은 소량 샘플을 견적팀에 맡기면 개당 최소 10,000원 이상.\n- 사이트에서 주문 가능한 제품·수량은 별도 견적 없음. 대량, 규격 외, 사이트에 없는 상품은 이메일 견적 요청.\n- 배송비 3,000원, 50,000원 이상 구매 시 무료. 1m 넘는 대형이나 깨지기 쉬운 제품은 퀵 출고 요청. 해외배송 가능 상품 있음.\n- 운영시간 평일 09:00~18:00, 점심 12:00~13:00, 주말·공휴일 휴무.\n- 수량 구간: 1~9개(도안 9종 이하), 10~99개(도안 9종 이하, 도안 1종당 10개 이상), 100~499개, 500~999개, 전부 다른 도안(개당). 구간별 도안 수 제한은 상품마다 조금 다름.\n- 수량별 상세 가격표는 사이트에 이미지로만 있어 이 정보에는 없음.\n- 제작 방식: 일반(아크릴 표면에 인쇄), 라미(아크릴 두 장 사이에 인쇄, 인쇄 보호와 고급스러운 느낌).\n- 화이트 인쇄: 컬러 아래 흰색을 깔아 색을 선명하고 불투명하게 함. 없으면 컬러가 비침. 기본은 뒷면 화이트.\n- 낱개 OPP 포장은 개당 100원 추가(자율형, 렌티큘러). 조립형, 디오라마, 회전 스탠드는 낱개 OPP 포장으로 출고.\n[파일 보내는 법]\n- 일러스트레이터나 무료 '올댓에디터'로 만든 PDF 업로드. 같은 자재·크기의 여러 도안은 PDF 하나로. 10MB 이하.\n- 10MB 넘으면 all_that_cs@naver.com 으로 메일(주문번호, 주문자명 필수).\n- 포토샵, 클립스튜디오 파일이나 직접 작업이 어려우면 '도안작업의뢰'를 추가 구매(상품별 10,000~30,000원). 도안 종류마다 1개씩. 파일 형식 ai, jpg, png, psd, zip.\n- 선 두께는 0.3mm 이상, 도안은 1:1 비율. 외곽 여백은 약 2~3mm 권장(너무 얇으면 깨지거나 잘 안 보임).\n- 받침에 닿는 아랫면이 좁거나 기울면 혼자 서기 어려움.\n- 주문 데이터는 3개월 보관. 같은 디자인 재주문은 '파일변경없음' 선택.\n[상품별 상세]\n- 자율형: 투명아크릴 2.7T(3T), 라미 3T. 일반 크기(cm) 35x50~150x150 여러 종, 라미 30x50~140x140 여러 종. 받침: 없음/투명 3T·5T/인쇄 3T/라미인쇄 3T. 받침 모양 직접제작·원형·사각·육각. 양면 인쇄는 배송메시지로 요청하면 추가금 안내.\n- 조립형: 투명 3T(일반/라미). 크기 95x95, 150x75, 150x100, 150x150mm. 단면/양면 선택. 파츠 추가 개당 200원(최대 4개). 판 하나에 넣을 수 있는 그림 수 제한 있음(일반 150x150 이상 6개, 미만 4개).\n- 디오라마 3면: 투명 3T(일반/라미). 한 면 크기 4, 5, 6, 7, 8.5cm. 조립형(끼우는 방식)과 고정형(꽂는 방식). 5, 7, 8.5cm는 판 2개로 제작.\n- 회전 캐릭터: 투명 3T. 크기 M 143x143mm, L 135x270mm. 앞뒤 같은 그림/다른 그림 선택. 사이트 자료실 가이드 파일로 제작해야 제대로 돎.\n- 렌티큘러: 렌티큘러 필름 + 투명 3T 라미. 크기 30x50~140x140mm 여러 종. 소량 주문은 제작 기간 최대 14일 걸릴 수 있음.\n[없는 정보] 대부분 상품의 정확한 제작 기간, 수량별 상세 단가, 무게. 일부 상품은 확인 당시 품절 표시가 있었을 수 있음."
+  }
+ }
+}
