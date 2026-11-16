@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>민트 아크릴샵</title>
+<style>
+  :root{--bg:#000;--panel:#111;--line:#2a2a2a;--text:#fff;--sub:#9a9a9a;--brand:#2ee6c5;--warn:#ff6b6b}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:var(--bg);color:var(--text);padding:24px 16px 40px}
+  .wrap{max-width:1100px;margin:0 auto}
+  .top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;border-bottom:2px solid #222;padding-bottom:14px;margin-bottom:18px}
+  h1{font-size:24px}
+  h1 span{color:var(--brand)}
+  .sub{color:var(--sub);font-size:13px;margin-top:4px}
+  .tools{display:flex;gap:8px;flex-wrap:wrap}
+  .tools button,.tools label{background:#111;border:1px solid #333;color:#ddd;border-radius:8px;padding:8px 12px;font:inherit;font-size:13px;cursor:pointer}
+  .tools button:hover,.tools label:hover{border-color:var(--brand);color:var(--brand)}
+  .tools .danger{border-color:var(--warn);color:var(--warn)}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  .stat .k{font-size:12px;color:var(--sub)}
+  .stat .v{font-size:22px;font-weight:700;margin-top:2px}
+  .stat.warn .v{color:var(--warn)}
+  .filter{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+  .pill{background:#111;color:#ddd;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font:inherit;font-size:13px;cursor:pointer}
+  .pill:hover{border-color:var(--brand)}
+  .pill.active{background:var(--brand);border-color:var(--brand);color:#000;font-weight:700}
+  .bar{display:flex;gap:8px;margin:6px 0 10px}
+  .bar input{flex:1;background:#111;border:1px solid var(--line);border-radius:10px;color:#fff;font:inherit;font-size:14px;padding:9px 12px;outline:none}
+  .bar input:focus{border-color:var(--brand)}
+  .add{background:var(--brand);color:#000;border:none;border-radius:10px;font:inherit;font-size:14px;font-weight:700;padding:0 16px;cursor:pointer}
+  .msg{font-size:13px;min-height:20px;color:var(--brand);margin-bottom:6px}
+  .msg.err{color:var(--warn)}
+  .form{background:#111;border:1px solid var(--brand);border-radius:12px;padding:14px;margin-bottom:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+  .form[hidden],.h2[hidden]{display:none}
+  .form label{font-size:12px;color:#bbb;display:flex;flex-direction:column;gap:4px}
+  .form input,.form select,.form textarea{background:#000;border:1px solid #333;border-radius:8px;color:#fff;font:inherit;font-size:14px;padding:8px}
+  .form textarea{font-size:13px;line-height:1.6;resize:vertical}
+  .form .full{grid-column:1/-1}
+  .form small,.h2 small{color:var(--sub);font-weight:400;font-size:12px;margin-left:4px}
+  .form .acts{grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end}
+  .form .acts button{border-radius:8px;padding:8px 16px;font:inherit;font-size:14px;cursor:pointer}
+  .ac-set{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+  .set-h{grid-column:1/-1;font-size:15px;font-weight:700}
+  .h2{font-size:15px;font-weight:700;margin:6px 0 10px}
+  .save{background:var(--brand);color:#000;border:none;font-weight:700}
+  .cancel{background:none;color:#ddd;border:1px solid #444}
+  .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+  table{width:100%;border-collapse:collapse;font-size:13px;min-width:760px}
+  th{background:#141414;color:#aaa;font-weight:600;text-align:left;padding:10px;white-space:nowrap;border-bottom:1px solid var(--line)}
+  td{padding:9px 10px;border-bottom:1px solid #1d1d1d;white-space:nowrap;max-width:240px;overflow:hidden;text-overflow:ellipsis}
+  tr:hover td{background:#0e0e0e}
+  td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .acts-cell{display:flex;gap:6px}
+  .acts-cell button{background:none;border:1px solid #444;color:#ddd;border-radius:6px;padding:4px 10px;font:inherit;font-size:12px;cursor:pointer}
+  .acts-cell button:hover{border-color:var(--brand);color:var(--brand)}
+  .acts-cell button.danger{border-color:var(--warn);color:var(--warn)}
+  .tag-low{display:inline-block;margin-left:6px;font-size:11px;font-weight:700;color:#000;background:var(--warn);border-radius:999px;padding:1px 7px}
+  .empty{padding:30px;text-align:center;color:var(--sub)}
+  .note{font-size:12px;color:var(--sub);margin-top:18px;text-align:center;line-height:1.7}
+  .views{display:flex;gap:4px;background:#0a0a0a;border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:18px;width:max-content}
+  .vtab{background:none;border:none;color:#aaa;font:inherit;font-size:14px;padding:8px 18px;border-radius:9px;cursor:pointer}
+  .vtab.active{background:var(--brand);color:#000;font-weight:700}
+  #shopView[hidden],#adminView[hidden]{display:none}
+  .ac-title{font-size:22px}
+  .ac-title span{color:var(--brand)}
+  .src{border:1px solid var(--line);background:#111;border-radius:12px;padding:8px 14px;font-size:12.5px;line-height:1.7;color:#ddd;margin:10px 0 12px;display:flex;flex-wrap:wrap;column-gap:18px}
+  .src b{color:#fff;margin-right:6px}
+  .src a{color:var(--brand)}
+  .src-warn{color:#fff;font-weight:700;font-size:12px}
+  .ac-h3{font-size:14px;font-weight:700;margin:0 0 8px}
+  .ac-h3 small{font-weight:400;color:var(--sub);font-size:12px;margin-left:6px}
+  #acList[hidden],.ac-showlist[hidden]{display:none}
+  .ac-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+  .ac-chip{background:#111;color:#ddd;border:1px solid var(--line);border-radius:999px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer}
+  .ac-chip:hover{border-color:var(--brand);color:var(--brand)}
+  .ac-showlist{background:none;border:1px solid var(--line);color:#bbb;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;cursor:pointer;margin-bottom:10px}
+  .ac-showlist:hover{border-color:var(--brand);color:var(--brand)}
+  .ac-chat{border:1px solid var(--line);border-radius:14px;background:#0a0a0a;padding:12px}
+  .ac-msgs{height:58vh;min-height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding:4px 2px 12px}
+  .ac-empty{color:var(--sub);font-size:13px;text-align:center;margin:auto;line-height:1.8}
+  .row{display:flex;gap:10px;align-items:flex-start}
+  .row.user{flex-direction:row-reverse}
+  .bot-icon{width:32px;height:32px;border-radius:50%;background:#bfe9df;display:grid;place-items:center;font-size:16px;flex-shrink:0}
+  .bubble{max-width:78%;padding:12px 15px;border-radius:16px;font-size:15px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+  .row.bot .bubble{background:#bfe9df;color:#000;border-top-left-radius:4px}
+  .row.user .bubble{background:#2563eb;color:#fff;border-top-right-radius:4px}
+  .bubble a{color:#065f52;font-weight:700}
+  .ask{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:10px}
+  .ask input{width:70px;border:1px solid #7fbfb0;border-radius:8px;padding:6px;font:inherit;font-size:14px}
+  .ask button{border:none;border-radius:8px;padding:7px 12px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;background:#000;color:#fff}
+  .ask button.no{background:none;color:#000;border:1px solid #000}
+  .ask button:disabled{opacity:.4;cursor:default}
+  .receipt{margin-left:42px;border:1.5px solid var(--brand);border-radius:14px;padding:12px 14px;background:#0d1f1b;min-width:240px;max-width:380px}
+  .rc-h{font-weight:700;color:var(--brand);margin-bottom:8px}
+  .rc-l{display:flex;gap:10px;font-size:14px;padding:3px 0;border-bottom:1px dashed #23423b}
+  .rc-l b{width:72px;flex-shrink:0;color:#9fd8cb;font-weight:600}
+  .rc-f{font-size:12px;color:#bbb;margin-top:8px}
+  .rc-btn{margin-top:10px;background:var(--brand);color:#000;border:none;border-radius:8px;padding:7px 12px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+  .ac-box{display:flex;align-items:flex-end;gap:8px;background:#111;border:1px solid var(--line);border-radius:16px;padding:8px 8px 8px 14px}
+  .ac-box:focus-within{border-color:var(--brand)}
+  .ac-box textarea{flex:1;border:none;outline:none;resize:none;font:inherit;font-size:15px;max-height:140px;padding:6px 0;background:transparent;color:#fff}
+  .send{width:38px;height:38px;border:none;border-radius:10px;background:var(--brand);color:#000;font-size:18px;font-weight:700;cursor:pointer;flex-shrink:0}
+  .send:disabled{background:#333;color:#777;cursor:default}
+  .userbar{display:flex;gap:12px;align-items:center;font-size:13px;color:#ccc;margin-bottom:8px;flex-wrap:wrap}
+  .userbar #userLabel{font-weight:700;color:#fff}
+  .link-btn{background:none;border:1px solid #333;color:#bbb;border-radius:999px;padding:4px 10px;font:inherit;font-size:12px;cursor:pointer}
+  .link-btn:hover{border-color:var(--brand);color:var(--brand)}
+  .gate{border:1.5px solid var(--brand);border-radius:14px;background:#0d1f1b;padding:16px;margin-bottom:12px;display:flex;flex-direction:column;gap:6px}
+  .gate[hidden]{display:none}
+  .gate span{font-size:13px;color:#bbb}
+  .gate-row{display:flex;gap:8px;margin-top:6px}
+  .gate-row input{flex:1;max-width:280px;background:#000;border:1px solid #333;border-radius:8px;color:#fff;font:inherit;font-size:15px;padding:9px}
+  .gate-row button{background:var(--brand);border:none;border-radius:8px;font:inherit;font-weight:700;padding:0 16px;cursor:pointer}
+  .bot-col{display:flex;flex-direction:column;gap:4px;max-width:78%}
+  .bot-col .bubble{max-width:100%}
+  .act-wrap{display:flex;flex-direction:column;gap:6px}
+  .act-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .act-bar > div:has(.rep-form){flex-basis:100%}
+  .act-btn{background:none;border:1px solid #333;color:#aaa;border-radius:999px;padding:3px 10px;font:inherit;font-size:12px;cursor:pointer}
+  .act-btn:hover{border-color:var(--brand);color:var(--brand)}
+  .act-btn.on{background:var(--brand);border-color:var(--brand);color:#000;font-weight:700}
+  .act-note{font-size:12px;color:var(--brand);padding:0 4px}
+  .act-note:empty{display:none}
+  .fb-form{background:#0d1f1b;border:1px solid var(--brand);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:6px;font-size:13px}
+  .fb-form textarea{background:#000;color:#fff;border:1px solid #444;border-radius:6px;padding:6px;font:inherit;font-size:13px}
+  .fb-form .r-acts{display:flex;gap:6px;justify-content:flex-end}
+  .fb-form button{border-radius:6px;padding:5px 12px;font:inherit;font-size:12px;cursor:pointer;border:1px solid #555;background:none;color:#ddd}
+  .fb-form button.go{background:var(--brand);border-color:var(--brand);color:#000;font-weight:700}
+  .rep-btn{align-self:flex-start;background:none;border:1px solid #333;border-radius:999px;color:#888;font:inherit;font-size:12px;cursor:pointer;padding:3px 10px}
+  .rep-btn:hover{color:var(--warn)}
+  .rep-done{font-size:12px;color:var(--warn);padding:2px 4px}
+  .rep-form{background:#1a0f0f;border:1px solid var(--warn);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:6px;font-size:13px}
+  .rep-form select,.rep-form textarea{background:#000;color:#fff;border:1px solid #444;border-radius:6px;padding:6px;font:inherit;font-size:13px}
+  .rep-form .r-acts{display:flex;gap:6px;justify-content:flex-end}
+  .rep-form button{border-radius:6px;padding:5px 12px;font:inherit;font-size:12px;cursor:pointer;border:1px solid #555;background:none;color:#ddd}
+  .rep-form button.go{background:var(--warn);border-color:var(--warn);color:#000;font-weight:700}
+  .badge-g{display:inline-block;font-size:11px;font-weight:700;border-radius:999px;padding:1px 8px;background:#22c55e;color:#000}
+  .badge-b{display:inline-block;font-size:11px;font-weight:700;border-radius:999px;padding:1px 8px;background:#f5c26b;color:#000}
+  .ufb{grid-column:1/-1;font-weight:700}
+  .ufb.good{color:#22c55e}
+  .ufb.bad{color:#f5c26b}
+  .pill-sep{width:1px;background:#333;margin:0 4px}
+  #custom[hidden],#stdBar[hidden],#stdTable[hidden]{display:none}
+  .cbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;font-size:13px;color:#ccc}
+  .cbar select,.cbar input[type=text]{background:#111;border:1px solid var(--line);border-radius:8px;color:#fff;font:inherit;font-size:13px;padding:7px 10px}
+  .cbar .grow{flex:1;min-width:160px}
+  .cbtn{white-space:nowrap;background:#111;border:1px solid #333;color:#ddd;border-radius:8px;padding:7px 12px;font:inherit;font-size:13px;cursor:pointer}
+  .cbtn:hover{border-color:var(--brand);color:var(--brand)}
+  .cbtn.primary{background:var(--brand);border-color:var(--brand);color:#000;font-weight:700}
+  .cbtn.danger{border-color:var(--warn);color:var(--warn)}
+  .badge-r{display:inline-block;font-size:11px;font-weight:700;border-radius:999px;padding:1px 8px;background:var(--warn);color:#000}
+  .badge-f{display:inline-block;font-size:11px;font-weight:700;border-radius:999px;padding:1px 8px;background:var(--brand);color:#000}
+  .badge-n{display:inline-block;font-size:11px;border-radius:999px;padding:1px 8px;border:1px solid #444;color:#aaa}
+  .tx{display:flex;flex-direction:column;gap:12px;border:1px solid var(--line);border-radius:12px;padding:14px;background:#0a0a0a}
+  .tx-head{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+  .tx-head b{font-size:16px}
+  .tx .row .bubble{max-width:100%}
+  .fb{border:1px solid #2c2c2c;border-radius:10px;background:#101010;padding:10px 12px;margin-left:42px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;font-size:12px;color:#bbb}
+  .fb.reported{border-color:var(--warn)}
+  .fb .full{grid-column:1/-1}
+  .fb label{display:flex;flex-direction:column;gap:4px}
+  .fb select,.fb textarea{background:#000;border:1px solid #333;border-radius:6px;color:#fff;font:inherit;font-size:13px;padding:6px}
+  .fb .chk{flex-direction:row;align-items:center;gap:6px;color:#ddd}
+  .fb .f-acts{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .fb .rep-info{grid-column:1/-1;color:var(--warn);font-weight:700}
+  .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:14px}
+  .bars{display:flex;flex-direction:column;gap:6px;font-size:13px}
+  .bar-row{display:grid;grid-template-columns:150px 1fr 70px;gap:8px;align-items:center}
+  .bar-track{height:12px;background:#1b1b1b;border-radius:6px;overflow:hidden}
+  .bar-fill{height:100%;background:var(--warn);border-radius:6px}
+  .bar-fill.mint{background:var(--brand)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+  .card{border:1px solid var(--line);border-radius:12px;background:#0d0d0d;padding:14px}
+  .card h3{font-size:14px;margin-bottom:10px}
+  .card table{min-width:0}
+  .guide-text{white-space:pre-wrap;line-height:1.5}
+  .muted{color:var(--sub);font-size:12px}
+  @media (max-width:768px){
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .grid2{grid-template-columns:1fr}
+    .bar-row{grid-template-columns:100px 1fr 54px}
+    .fb{margin-left:0}
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .ac-chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+    .ac-chip{white-space:nowrap;flex-shrink:0;font-size:12px}
+    .bubble{max-width:86%}
+    .ac-msgs{height:55vh}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <h1>민트 아크릴샵 <span>AI 챗봇</span></h1>
+      <p class="sub" id="headSub">내 컴퓨터에서 실행 중이에요. 데이터는 폴더 안 data.json 파일에 저장돼요.</p>
+    </div>
+    <div class="tools">
+      <button id="exportBtn">데이터 내보내기</button>
+      <label>데이터 가져오기<input type="file" id="importFile" accept=".json,application/json" hidden></label>
+      <button id="resetBtn" class="danger">처음 데이터로 초기화</button>
+    </div>
+  </div>
+
+  <div class="views">
+    <button class="vtab active" data-view="shop">아크릴 스탠드</button>
+    <button class="vtab" data-view="admin">관리자</button>
+  </div>
+
+  <div id="shopView">
+    <div class="userbar">
+      <span id="userLabel">사용자: -</span>
+      <button class="link-btn" id="changeUser">사용자 바꾸기</button>
+      <button class="link-btn" id="newChat">새 대화</button>
+    </div>
+    <h2 class="ac-title" id="acTitle"></h2>
+    <p class="sub" id="acSub"></p>
+    <div class="src">
+      <div><b>참고 사이트</b> <a id="acSrcLink" href="#" target="_blank" rel="noopener"></a></div>
+      <div><b>정보 기준일</b> <span id="acSrcDate"></span></div>
+      <div class="src-warn" id="acNotice"></div>
+    </div>
+    <div id="acList">
+      <div class="ac-h3">상품 <span id="acCount">0</span>개 <small>누르면 바로 안내해요</small></div>
+      <div class="ac-chips" id="acChips"></div>
+    </div>
+    <button class="ac-showlist" id="acShowList" hidden>상품 목록 다시 보기</button>
+    <form class="gate" id="gate" hidden>
+      <b>챗봇을 쓰기 전에 이름이나 닉네임을 알려주세요.</b>
+      <span>대화 기록과 신고를 누가 남겼는지 관리자가 알 수 있게 저장해요. 이 컴퓨터의 브라우저에만 저장돼요.</span>
+      <div class="gate-row"><input id="gateName" maxlength="20" placeholder="예: 박형준" required><button type="button" data-submit>시작하기</button></div>
+    </form>
+    <div class="ac-chat">
+      <div class="ac-msgs" id="acMsgs">
+        <div class="ac-empty">상품 버튼을 누르거나 질문해 보세요.<br>예: 선물용으로 뭐가 좋아? / 배송비 얼마야? / MA-1011 배송 어디야?</div>
+      </div>
+      <div class="ac-box">
+        <textarea id="acInput" rows="1" placeholder="아크릴 스탠드에 대해 물어보세요"></textarea>
+        <button class="send" id="acSend" disabled aria-label="보내기">↑</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="adminView" hidden>
+  <div class="stats" id="stats"></div>
+  <div class="filter" id="tabs">
+    <button class="pill active" data-v="products">상품 목록</button>
+    <button class="pill" data-v="inventory">재고</button>
+    <button class="pill" data-v="orders">주문 내역</button>
+    <button class="pill" data-v="shipments">배송 추적</button>
+    <button class="pill" data-v="acryl_products">아크릴 탭 설정</button>
+    <span class="pill-sep"></span>
+    <button class="pill" data-v="_logs">대화 기록</button>
+    <button class="pill" data-v="_reports">신고 통계</button>
+    <button class="pill" data-v="_guides">답변 지침</button>
+  </div>
+
+  <form class="form ac-set" id="setForm" hidden>
+    <div class="set-h">아크릴 스탠드 탭 기본 설정</div>
+    <label>탭 제목<input name="title" required></label>
+    <label>제목 아래 안내 문구<input name="subtitle" required></label>
+    <label>참고 사이트 이름<input name="sourceName" required></label>
+    <label>참고 사이트 주소<input name="sourceUrl" type="url" required></label>
+    <label>정보 기준일<input name="infoDate" type="date" required></label>
+    <label>주의 문구<input name="notice" required></label>
+    <label class="full">AI 답변 규칙 <small>한 줄에 하나씩.</small><textarea name="rules" rows="6" required></textarea></label>
+    <label class="full">사이트 정보 (AI가 참고하는 내용)<textarea name="info" rows="12" required></textarea></label>
+    <div class="acts"><button type="button" class="cancel" id="setReset">기본값 불러오기</button><button type="button" class="save" data-submit>설정 저장</button></div>
+  </form>
+  <div class="h2" id="setTableTitle" hidden>아크릴 탭 상품 버튼 <small>순서, 이름, 시작가, 링크를 고치거나 숨길 수 있어요.</small></div>
+
+  <div id="custom" hidden></div>
+  <div class="bar" id="stdBar">
+    <input id="search" placeholder="검색 (이름, 코드, 주문번호 등)">
+    <button class="add" id="addBtn">+ 새로 추가</button>
+  </div>
+  <div class="msg" id="msg"></div>
+  <form class="form" id="form" hidden></form>
+  <div class="table-wrap" id="stdTable"><table id="table"></table></div>
+  </div>
+  <p class="note">모든 데이터는 연습용 가상 데이터예요. 실제 고객 정보를 넣지 마세요.<br>
+  이 프로그램의 데이터는 Claude 페이지 'AI 도우미 챗봇'의 데이터와 따로 저장돼요.</p>
+</div>
+
+<script>
+  // ===== 서버와 데이터 주고받기 =====
+  let SCHEMA = null, AC_DEFAULT = null, DATA = null;
+  const AC_SET_KEYS = ['title','subtitle','sourceName','sourceUrl','infoDate','notice','rules','info'];
+  const clone = o => JSON.parse(JSON.stringify(o));
+  async function api(path, body){
+    const r = await fetch(path, body === undefined ? {} : {method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify(body)});
+    const j = await r.json().catch(() => ({}));
+    if(!r.ok) throw new Error(j.error || '서버 오류');
+    return j;
+  }
+  async function refresh(){ try{ DATA = await api('/api/data'); }catch(e){ say('서버에서 데이터를 불러오지 못했어요. 검은 서버 창이 켜져 있는지 확인하세요.', true); } }
+  function persist(){
+    api('/api/data', DATA).catch(() => say('저장하지 못했어요. 검은 서버 창이 켜져 있는지 확인하세요.', true));
+    return true;
+  }
+  const canSave = true;
+
+  // ===== 화면 =====
+  let col = 'products', editing = null, delArm = null, setDirty = false;
+  const $ = id => document.getElementById(id);
+  // 폼 제출: 미리보기 화면처럼 폼 제출이 막힌 곳에서도 동작하도록 버튼 클릭과 Enter로 처리
+  function bindSubmit(form, handler){
+    let lock = false;
+    const run = e => { if(e && e.preventDefault) e.preventDefault(); if(lock) return; lock = true; Promise.resolve().then(() => handler(e)).catch(err => { console.error(err); say('처리 중 문제가 생겼어요. 다시 시도해 주세요.', true); }).finally(() => { lock = false; }); };
+    form.addEventListener('submit', run);
+    form.addEventListener('click', e => { if(e.target.closest('[data-submit]')) run(e); });
+    form.addEventListener('keydown', e => { if(e.key === 'Enter' && !e.isComposing && e.target.tagName === 'INPUT') run(e); });
+  }
+  const won = n => (Number(n)||0).toLocaleString('ko-KR') + '원';
+  const keyOf = (c, r) => String(r[SCHEMA[c].key]);
+  function say(t, err){ $('msg').textContent = t || ''; $('msg').classList.toggle('err', !!err); }
+
+  function renderStats(){
+    const low = DATA.inventory.filter(i => Number(i.stock) < Number(i.safety)).length;
+    const pending = DATA.shipments.filter(s => s.status !== '배송완료').length;
+    const sales = DATA.orders.filter(o => o.payment === '결제완료').reduce((a,o) => a + (Number(o.amount)||0), 0);
+    $('stats').innerHTML =
+      `<div class="stat"><div class="k">상품</div><div class="v">${DATA.products.length}개</div></div>
+       <div class="stat ${low?'warn':''}"><div class="k">재고 부족</div><div class="v">${low}개</div></div>
+       <div class="stat"><div class="k">배송 미완료</div><div class="v">${pending}건</div></div>
+       <div class="stat"><div class="k">결제완료 매출</div><div class="v">${won(sales)}</div></div>`;
+  }
+
+  function cellText(f, r){
+    const v = r[f.k];
+    if(v === undefined || v === '') return '-';
+    if(f.t === 'number' && /원/.test(f.l)) return won(v);
+    if(f.t === 'number') return Number(v).toLocaleString('ko-KR');
+    return String(v);
+  }
+
+  function render(){
+    renderStats();
+    const special = col.startsWith('_');
+    $('custom').hidden = !special; $('stdBar').hidden = special; $('stdTable').hidden = special;
+    if(special){ $('setForm').hidden = true; $('setTableTitle').hidden = true; $('form').hidden = true;
+      if(col === '_logs') renderLogs(); else if(col === '_reports') renderReports(); else renderGuides(); return; }
+    const isAc = col === 'acryl_products';
+    $('setForm').hidden = !isAc; $('setTableTitle').hidden = !isAc;
+    const sc = SCHEMA[col]; const kw = $('search').value.trim();
+    let rows = DATA[col].slice();
+    rows.sort((a,b) => isAc ? (Number(a.order)||0) - (Number(b.order)||0) : keyOf(col,a).localeCompare(keyOf(col,b)));
+    rows = rows.filter(r => !kw || Object.values(r).join(' ').includes(kw));
+    const t = $('table'); t.innerHTML = '';
+    const hr = t.insertRow(); sc.fields.concat([{l:'관리'}]).forEach(f => { const th = document.createElement('th'); th.textContent = f.l; hr.appendChild(th); });
+    if(!rows.length){ const c = t.insertRow().insertCell(); c.colSpan = sc.fields.length + 1; c.className = 'empty'; c.textContent = '데이터가 없어요. "+ 새로 추가"로 넣어 보세요.'; return; }
+    rows.forEach(r => {
+      const tr = t.insertRow(); const id = keyOf(col, r);
+      sc.fields.forEach(f => {
+        const td = tr.insertCell(); td.textContent = cellText(f, r);
+        if(f.t === 'number') td.className = 'num';
+        if(col === 'inventory' && f.k === 'stock' && Number(r.stock) < Number(r.safety)){ const s = document.createElement('span'); s.className = 'tag-low'; s.textContent = '부족'; td.appendChild(s); }
+      });
+      const td = tr.insertCell(); const box = document.createElement('div'); box.className = 'acts-cell';
+      const e = document.createElement('button'); e.textContent = '수정'; e.onclick = () => { delArm = null; openForm(r); render(); };
+      const d = document.createElement('button'); d.textContent = delArm === id ? '정말 삭제?' : '삭제'; if(delArm === id) d.className = 'danger';
+      d.onclick = () => {
+        if(delArm !== id){ delArm = id; render(); return; }
+        delArm = null; DATA[col] = DATA[col].filter(x => keyOf(col, x) !== id);
+        if(persist() || !canSave) say(`"${id}" 삭제했어요.`); render();
+      };
+      box.append(e, d); td.appendChild(box);
+    });
+  }
+
+  function openForm(row){
+    const sc = SCHEMA[col]; const f = $('form');
+    editing = row ? keyOf(col, row) : '__new__';
+    f.innerHTML = '';
+    sc.fields.forEach(fd => {
+      const lb = document.createElement('label'); lb.textContent = fd.l;
+      let el;
+      if(fd.t === 'select'){ el = document.createElement('select'); fd.o.forEach(o => { const op = document.createElement('option'); op.textContent = o; el.appendChild(op); }); }
+      else { el = document.createElement('input'); el.type = fd.t === 'number' ? 'number' : fd.t === 'date' ? 'date' : 'text'; if(fd.t === 'number'){ el.min = 0; el.step = 1; } el.required = true; }
+      el.name = fd.k; el.value = row && row[fd.k] !== undefined ? row[fd.k] : (fd.t === 'select' ? fd.o[0] : '');
+      lb.appendChild(el); f.appendChild(lb);
+    });
+    const acts = document.createElement('div'); acts.className = 'acts';
+    const c = document.createElement('button'); c.type = 'button'; c.className = 'cancel'; c.textContent = '취소'; c.onclick = closeForm;
+    const s = document.createElement('button'); s.type = 'button'; s.dataset.submit = ''; s.className = 'save'; s.textContent = row ? '수정 저장' : '추가';
+    acts.append(c, s); f.appendChild(acts); f.hidden = false;
+    f.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+  function closeForm(){ $('form').hidden = true; editing = null; }
+
+  bindSubmit($('form'), async e => {
+    e.preventDefault();
+    const sc = SCHEMA[col]; const f = $('form');
+    const prev = editing !== '__new__' ? DATA[col].find(r => keyOf(col, r) === editing) : null;
+    const obj = prev ? clone(prev) : {};
+    for(const fd of sc.fields){
+      let v = f.elements[fd.k].value.trim();
+      if(fd.t === 'number'){ v = Number(v); if(!Number.isFinite(v) || v < 0){ say(`${fd.l}은(는) 0 이상의 숫자로 넣어 주세요.`, true); return; } }
+      if(v === ''){ say(`${fd.l}을(를) 입력해 주세요.`, true); return; }
+      obj[fd.k] = v;
+    }
+    const newKey = String(obj[sc.key]);
+    if(DATA[col].some(r => keyOf(col, r) === newKey && keyOf(col, r) !== editing)){ say(`"${newKey}"은(는) 이미 있어요.`, true); return; }
+    if(prev) DATA[col] = DATA[col].map(r => keyOf(col, r) === editing ? obj : r); else DATA[col].push(obj);
+    if(persist()) say(`"${newKey}" 저장했어요.`);
+    closeForm(); render();
+  });
+
+  // ----- 아크릴 탭 설정 폼 -----
+  function fillSet(src){ AC_SET_KEYS.forEach(k => { $('setForm').elements[k].value = (src || DATA.settings || AC_DEFAULT)[k] || ''; }); setDirty = !!src; }
+  $('setForm').addEventListener('input', () => { setDirty = true; });
+  $('setReset').onclick = () => { fillSet(AC_DEFAULT); say('기본값을 불러왔어요. "설정 저장"을 눌러야 반영돼요.'); };
+  bindSubmit($('setForm'), async e => {
+    e.preventDefault(); const o = {};
+    for(const k of AC_SET_KEYS){ const v = $('setForm').elements[k].value.trim(); if(!v){ say('비어 있는 칸이 있어요.', true); return; } o[k] = v; }
+    if(!/^https?:\/\//.test(o.sourceUrl)){ say('사이트 주소는 https:// 로 시작해야 해요.', true); return; }
+    DATA.settings = o; setDirty = false; if(persist()) say('아크릴 탭 설정을 저장했어요.');
+  });
+
+  // ----- 탭, 검색, 추가 -----
+  document.querySelectorAll('#tabs .pill').forEach(b => b.onclick = () => {
+    document.querySelectorAll('#tabs .pill').forEach(x => x.classList.remove('active'));
+    b.classList.add('active'); col = b.dataset.v; delArm = null; closeForm(); say(''); if(col === '_logs' && !keepSid) logView.sid = null; keepSid = false; if(col === '_logs' || col === '_reports') loadGuides().then(render); else render();
+    if(col === 'acryl_products' && !setDirty) fillSet();
+  });
+  $('search').addEventListener('input', render);
+  $('addBtn').onclick = () => { delArm = null; openForm(null); };
+
+  // ----- 내보내기, 가져오기, 초기화 -----
+  $('exportBtn').onclick = () => {
+    const blob = new Blob([JSON.stringify(DATA, null, 2)], {type:'application/json'});
+    const a = document.createElement('a');
+    const d = new Date().toLocaleDateString('sv-SE', {timeZone:'Asia/Seoul'});
+    a.href = URL.createObjectURL(blob); a.download = `mint-acryl-data-${d}.json`; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    say('데이터를 JSON 파일로 내보냈어요. 다운로드 폴더를 확인하세요.');
+  };
+  $('importFile').addEventListener('change', async e => {
+    const file = e.target.files[0]; if(!file) return;
+    try{
+      const d = JSON.parse(await file.text());
+      if(!d || !Array.isArray(d.products) || !Array.isArray(d.orders)) throw new Error('형식');
+      Object.keys(SCHEMA).forEach(c => { if(!Array.isArray(d[c])) d[c] = []; });
+      if(!d.settings) d.settings = clone(AC_DEFAULT);
+      await api('/api/data', d); DATA = d; setDirty = false; render(); if(col === 'acryl_products') fillSet();
+      say('데이터를 가져왔어요.');
+    }catch(err){ say('가져오지 못했어요. 이 관리자에서 내보낸 JSON 파일인지 확인하세요.', true); }
+    e.target.value = '';
+  });
+  let resetArm = false;
+  $('resetBtn').onclick = () => {
+    if(!resetArm){ resetArm = true; $('resetBtn').textContent = '정말 초기화? 한 번 더 누르기'; setTimeout(() => { resetArm = false; $('resetBtn').textContent = '처음 데이터로 초기화'; }, 4000); return; }
+    resetArm = false; $('resetBtn').textContent = '처음 데이터로 초기화';
+    api('/api/reset', {}).then(d => { DATA = d; setDirty = false; render(); if(col === 'acryl_products') fillSet(); say('처음 가상 데이터로 되돌렸어요.'); })
+      .catch(() => say('초기화하지 못했어요.', true));
+  };
+
+
+  // ===== 관리자: 대화 기록 · 피드백 · 신고 통계 · 답변 지침 =====
+  const el = (tag, attrs = {}, ...kids) => {
+    const e = document.createElement(tag);
+    for(const [k,v] of Object.entries(attrs)){ if(k === 'class') e.className = v; else if(k === 'text') e.textContent = v; else if(k.startsWith('on')) e[k] = v; else if(v !== undefined && v !== null && v !== false) e.setAttribute(k, v === true ? '' : v); }
+    kids.flat().forEach(c => { if(c !== null && c !== undefined && c !== false) e.append(c.nodeType ? c : String(c)); });
+    return e;
+  };
+  let keepSid = false;
+  let logView = {sid: null, user: '', onlyReported: false, onlyBad: false, onlyTodo: false, q: ''};
+  let GUIDES = [];
+  async function loadGuides(){ try{ GUIDES = await api('/api/guidelines'); }catch(e){ GUIDES = []; say('지침을 불러오지 못했어요. 서버 창이 켜져 있는지 확인하세요.', true); } }
+  const botMsgs = ss => ss.messages.filter(m => m.role === 'bot');
+  const questionBefore = (ss, mid) => { const i = ss.messages.findIndex(m => m.id === mid); for(let j = i - 1; j >= 0; j--) if(ss.messages[j].role === 'user') return ss.messages[j].text; return ''; };
+
+  function renderLogs(){
+    Logs.load();
+    const box = $('custom'); box.innerHTML = '';
+    if(logView.sid && Logs.session(logView.sid)) return renderTranscript(box, Logs.session(logView.sid));
+    const users = [...new Map(Logs.data.sessions.map(x => [x.userId, x.userName])).entries()];
+    const userSel = el('select', {onchange: e => { logView.user = e.target.value; renderLogs(); }}, el('option', {value:'', text:'모든 사용자'}), users.map(([id,n]) => el('option', {value:id, text:n, selected: logView.user === id})));
+    const q = el('input', {type:'text', class:'grow', placeholder:'질문이나 답변 내용 검색', value: logView.q});
+    q.oninput = () => { logView.q = q.value; drawList(); };
+    const c1 = el('input', {type:'checkbox', checked: logView.onlyReported, onchange: e => { logView.onlyReported = e.target.checked; drawList(); }});
+    const c3 = el('input', {type:'checkbox', checked: logView.onlyBad, onchange: e => { logView.onlyBad = e.target.checked; drawList(); }});
+    const c2 = el('input', {type:'checkbox', checked: logView.onlyTodo, onchange: e => { logView.onlyTodo = e.target.checked; drawList(); }});
+    let delArmAll = false;
+    const delAll = el('button', {class:'cbtn danger', text:'기록 전체 삭제'});
+    delAll.onclick = () => { if(!delArmAll){ delArmAll = true; delAll.textContent = '정말 삭제? 한 번 더'; setTimeout(() => { delArmAll = false; delAll.textContent = '기록 전체 삭제'; }, 4000); return; }
+      Logs.data = {sessions:[]}; Logs.save(); say('대화 기록을 모두 지웠어요.'); renderLogs(); };
+    const exp = el('button', {class:'cbtn', text:'기록 내보내기', onclick: () => {
+      const blob = new Blob([JSON.stringify(Logs.data, null, 2)], {type:'application/json'}); const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = `mint-chat-logs-${new Date().toLocaleDateString('sv-SE', {timeZone:'Asia/Seoul'})}.json`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      say('대화 기록을 JSON 파일로 내보냈어요.'); }});
+    box.append(
+      el('div', {class:'cbar'}, userSel, q, el('label', {}, c1, ' 신고된 대화만'), el('label', {}, c3, ' 아쉬워요 받은 대화만'), el('label', {}, c2, ' 피드백 안 한 답변 있음'), exp, delAll),
+      el('div', {class:'muted', text:'대화 기록은 이 컴퓨터의 이 브라우저에만 저장돼요. 다른 브라우저에서 한 대화는 보이지 않아요.'}),
+      el('div', {class:'table-wrap', style:'margin-top:10px'}, el('table', {id:'logTable'})));
+    drawList();
+  }
+  function drawList(){
+    const t = $('logTable'); if(!t) return; t.innerHTML = '';
+    const kw = logView.q.trim();
+    const list = Logs.data.sessions.slice().reverse().filter(x =>
+      (!logView.user || x.userId === logView.user) &&
+      (!logView.onlyReported || x.messages.some(m => m.report)) &&
+      (!logView.onlyBad || x.messages.some(m => m.userFeedback && m.userFeedback.rating === 'bad')) &&
+      (!logView.onlyTodo || botMsgs(x).some(m => !m.feedback)) &&
+      (!kw || x.messages.some(m => m.text.includes(kw))));
+    const hr = t.insertRow(); ['시작 (KST)', '사용자', '첫 질문', '질문 수', '사용자 평가', '신고', '관리자 피드백', ''].forEach(h => hr.appendChild(el('th', {text:h})));
+    if(!list.length){ const c = t.insertRow().insertCell(); c.colSpan = 8; c.className = 'empty'; c.textContent = Logs.data.sessions.length ? '조건에 맞는 대화가 없어요.' : '아직 저장된 대화가 없어요. 아크릴 스탠드 탭에서 대화해 보세요.'; return; }
+    list.forEach(x => {
+      const tr = t.insertRow(); const bots = botMsgs(x); const rep = x.messages.filter(m => m.report).length; const fb = bots.filter(m => m.feedback).length;
+      const first = (x.messages.find(m => m.role === 'user') || {text:''}).text;
+      tr.insertCell().textContent = kst(x.startedAt);
+      tr.insertCell().textContent = x.userName;
+      const c3 = tr.insertCell(); c3.textContent = first.length > 34 ? first.slice(0, 34) + '…' : first;
+      const c4 = tr.insertCell(); c4.className = 'num'; c4.textContent = x.messages.filter(m => m.role === 'user').length;
+      const ug = bots.filter(m => m.userFeedback && m.userFeedback.rating === 'good').length, ub = bots.filter(m => m.userFeedback && m.userFeedback.rating === 'bad').length;
+      tr.insertCell().appendChild(ug || ub ? el('span', {}, ug ? el('span', {class:'badge-g', text:`좋아요 ${ug}`}) : '', ' ', ub ? el('span', {class:'badge-b', text:`아쉬워요 ${ub}`}) : '') : el('span', {class:'muted', text:'-'}));
+      tr.insertCell().appendChild(rep ? el('span', {class:'badge-r', text:`${rep}건`}) : el('span', {class:'muted', text:'-'}));
+      tr.insertCell().appendChild(el('span', {class: fb === bots.length && bots.length ? 'badge-f' : 'badge-n', text:`${fb}/${bots.length}`}));
+      tr.insertCell().appendChild(el('div', {class:'acts-cell'}, el('button', {text:'보기', onclick: () => { logView.sid = x.id; renderLogs(); }})));
+    });
+  }
+
+  function renderTranscript(box, ss){
+    box.append(el('div', {class:'tx-head'},
+      el('div', {}, el('b', {text:`${ss.userName}님의 대화`}), el('div', {class:'muted', text:`시작 ${kst(ss.startedAt)} · 대화 ID ${ss.id}`})),
+      el('button', {class:'cbtn', text:'목록으로', onclick: () => { logView.sid = null; renderLogs(); }})));
+    const tx = el('div', {class:'tx'});
+    ss.messages.forEach(m => {
+      if(m.role === 'user'){ tx.append(el('div', {class:'row user'}, el('div', {class:'bubble', text:m.text}))); return; }
+      tx.append(el('div', {class:'row bot'}, el('div', {class:'bot-icon', text:'🤖'}), el('div', {class:'bubble', text:m.text + (m.receipt ? `\n\n[가상 주문 ${m.receipt.order_id} 생성]` : '')})));
+      tx.append(feedbackForm(ss, m));
+    });
+    box.append(tx);
+  }
+
+  function feedbackForm(ss, m){
+    const f = m.feedback || {};
+    const wrap = el('div', {class:'fb' + (m.report ? ' reported' : '')});
+    if(m.userFeedback) wrap.append(el('div', {class:'ufb ' + m.userFeedback.rating, text:`사용자 평가: ${m.userFeedback.rating === 'good' ? '좋아요' : '아쉬워요'}${m.userFeedback.comment ? ' · ' + m.userFeedback.comment : ''} (${kst(m.userFeedback.at)})`}));
+    if(m.report) wrap.append(el('div', {class:'rep-info', text:`사용자 신고: ${m.report.reason}${m.report.note ? ' · ' + m.report.note : ''} (${kst(m.report.at)})`}));
+    if(m.error) wrap.append(el('div', {class:'full muted', text:'이 답변은 오류 안내 문구예요. AI 답변이 아니라 서버 설정 문제일 수 있어요.'}));
+    const rating = el('select', {}, ['평가 안 함', '좋음', '고칠 필요 있음'].map(v => el('option', {text:v, selected: (f.rating || '평가 안 함') === v})));
+    const note = el('textarea', {rows:2, maxlength:500, placeholder:'무엇이 좋았는지, 무엇이 문제였는지'}); note.value = f.note || '';
+    const guide = el('textarea', {rows:2, maxlength:600, placeholder:'예: 가격을 물으면 시작가라는 점과 사이트에서 옵션별 가격을 확인하라는 안내를 꼭 함께 말한다.'}); guide.value = f.guideText || '';
+    const apply = el('input', {type:'checkbox', checked: !!f.applied});
+    const status = el('span', {class:'muted', text: f.at ? `마지막 저장 ${kst(f.at)}${f.applied ? ' · 지침 반영 중' : ''}` : '아직 피드백 없음'});
+    const save = el('button', {class:'cbtn primary', text:'피드백 저장'});
+    save.onclick = async () => {
+      const g = guide.value.trim();
+      if(apply.checked && !g){ say('지침에 반영하려면 "다음 답변 지침" 칸을 채워 주세요.', true); guide.focus(); return; }
+      save.disabled = true;
+      const next = {rating: rating.value, note: note.value.trim(), guideText: g, applied: apply.checked, guidelineId: f.guidelineId || null, at: new Date().toISOString(), by: '관리자'};
+      try{
+        if(apply.checked){
+          if(next.guidelineId && GUIDES.some(x => x.id === next.guidelineId)) await api('/api/guidelines/update', {id: next.guidelineId, text: g, active: true});
+          else { const created = await api('/api/guidelines', {text: g, question: questionBefore(ss, m.id), answer: m.text, note: next.note, sessionId: ss.id, messageId: m.id}); next.guidelineId = created.id; }
+        } else if(next.guidelineId){
+          await api('/api/guidelines/update', {id: next.guidelineId, active: false}).catch(() => {});
+        }
+        await loadGuides();
+        const live = Logs.load() && Logs.msg(ss.id, m.id); if(live){ live.feedback = next; Logs.save(); }
+        m.feedback = next;
+        status.textContent = `마지막 저장 ${kst(next.at)}${next.applied ? ' · 지침 반영 중' : ''}`;
+        say(next.applied ? '피드백을 저장하고 다음 답변 지침에 반영했어요.' : '피드백을 저장했어요.');
+      }catch(err){ say('저장하지 못했어요. 서버 창이 켜져 있는지 확인하세요.', true); }
+      finally{ save.disabled = false; }
+    };
+    wrap.append(
+      el('label', {}, '답변 평가', rating),
+      el('label', {class:'full'}, '피드백 메모', note),
+      el('label', {class:'full'}, '다음 답변 지침 (AI에게 알려줄 규칙)', guide),
+      el('div', {class:'f-acts'}, el('label', {class:'chk'}, apply, '다음 답변부터 이 지침을 적용'), el('div', {}, status, ' ', save)));
+    return wrap;
+  }
+
+  function renderReports(){
+    Logs.load();
+    const box = $('custom'); box.innerHTML = '';
+    const all = []; Logs.data.sessions.forEach(ss => botMsgs(ss).forEach(m => all.push({ss, m})));
+    const reps = all.filter(x => x.m.report);
+    const fbDone = all.filter(x => x.m.feedback && x.m.feedback.rating !== '평가 안 함');
+    const applied = all.filter(x => x.m.feedback && x.m.feedback.applied);
+    const ugood = all.filter(x => x.m.userFeedback && x.m.userFeedback.rating === 'good'), ubad = all.filter(x => x.m.userFeedback && x.m.userFeedback.rating === 'bad');
+    const pct = (a, b) => b ? Math.round(a / b * 1000) / 10 + '%' : '0%';
+    const kpi = (k, v, warn) => el('div', {class:'stat' + (warn ? ' warn' : '')}, el('div', {class:'k', text:k}), el('div', {class:'v', text:v}));
+    box.append(el('div', {class:'kpis'},
+      kpi('AI 답변 수', `${all.length}개`), kpi('사용자 만족도', ugood.length + ubad.length ? pct(ugood.length, ugood.length + ubad.length) : '-'), kpi('신고 수', `${reps.length}건`, reps.length > 0), kpi('신고율', pct(reps.length, all.length), reps.length > 0),
+      kpi('피드백 완료', `${fbDone.length}개`), kpi('지침 반영', `${applied.length}개`)));
+    const barList = (rows, total, mint) => rows.length ? el('div', {class:'bars'}, rows.map(([k, n]) => el('div', {class:'bar-row'}, el('span', {text:k}), el('div', {class:'bar-track'}, el('div', {class:'bar-fill' + (mint ? ' mint' : ''), style:`width:${total && n ? Math.max(4, n / total * 100) : 0}%`})), el('span', {text:`${n}건`})))) : el('div', {class:'muted', text:'아직 데이터가 없어요.'});
+    const byReason = REPORT_REASONS.map(r => [r, reps.filter(x => x.m.report.reason === r).length]).filter(x => x[1]);
+    const days = []; for(let i = 6; i >= 0; i--) days.push(new Date(Date.now() - i * 86400000).toLocaleDateString('sv-SE', {timeZone:'Asia/Seoul'}));
+    const byDay = days.map(d => [d.slice(5), reps.filter(x => kstDay(x.m.report.at) === d).length]);
+    const maxDay = Math.max(1, ...byDay.map(x => x[1]));
+    box.append(el('div', {class:'grid2'},
+      el('div', {class:'card'}, el('h3', {text:'신고 사유별'}), barList(byReason, reps.length)),
+      el('div', {class:'card'}, el('h3', {text:'최근 7일 신고 (KST)'}), barList(byDay, maxDay))));
+    const users = {}; all.forEach(({ss, m}) => { const u = users[ss.userId] || (users[ss.userId] = {name: ss.userName, n: 0, r: 0}); u.n++; if(m.report) u.r++; });
+    const ut = el('table'); const uh = ut.insertRow(); ['사용자', 'AI 답변', '신고', '신고율'].forEach(h => uh.appendChild(el('th', {text:h})));
+    Object.values(users).sort((a, b) => b.r - a.r || b.n - a.n).forEach(u => { const tr = ut.insertRow(); tr.insertCell().textContent = u.name; [u.n, u.r].forEach(v => { const c = tr.insertCell(); c.className = 'num'; c.textContent = v; }); const c = tr.insertCell(); c.className = 'num'; c.textContent = pct(u.r, u.n); });
+    if(!Object.keys(users).length){ const c = ut.insertRow().insertCell(); c.colSpan = 4; c.className = 'empty'; c.textContent = '아직 데이터가 없어요.'; }
+    const handled = reps.filter(x => x.m.feedback).length;
+    box.append(el('div', {class:'grid2'},
+      el('div', {class:'card'}, el('h3', {text:'사용자별'}), el('div', {class:'table-wrap'}, ut)),
+      el('div', {class:'card'}, el('h3', {text:'신고 처리 현황'}), barList([['피드백 완료', handled], ['아직 안 봄', reps.length - handled]], Math.max(1, reps.length), true))));
+    const rt = el('table'); const rh = rt.insertRow(); ['신고 시간', '사용자', '사유', '질문', '답변', '처리', ''].forEach(h => rh.appendChild(el('th', {text:h})));
+    reps.slice().sort((a, b) => b.m.report.at.localeCompare(a.m.report.at)).forEach(({ss, m}) => {
+      const tr = rt.insertRow(); tr.insertCell().textContent = kst(m.report.at); tr.insertCell().textContent = ss.userName;
+      tr.insertCell().appendChild(el('span', {class:'badge-r', text:m.report.reason}));
+      const q = questionBefore(ss, m.id); tr.insertCell().textContent = q.length > 24 ? q.slice(0, 24) + '…' : q;
+      tr.insertCell().textContent = m.text.length > 30 ? m.text.slice(0, 30) + '…' : m.text;
+      tr.insertCell().appendChild(m.feedback ? el('span', {class:'badge-f', text: m.feedback.applied ? '지침 반영' : '피드백 완료'}) : el('span', {class:'badge-n', text:'대기'}));
+      tr.insertCell().appendChild(el('div', {class:'acts-cell'}, el('button', {text:'대화 보기', onclick: () => { logView.sid = ss.id; keepSid = true; document.querySelector('#tabs [data-v=_logs]').click(); }})));
+    });
+    if(!reps.length){ const c = rt.insertRow().insertCell(); c.colSpan = 7; c.className = 'empty'; c.textContent = '아직 신고가 없어요.'; }
+    box.append(el('div', {class:'card', style:'margin-bottom:12px'}, el('h3', {text:'신고 목록'}), el('div', {class:'table-wrap'}, rt)));
+    const ft = el('table'); const fh = ft.insertRow(); ['시간', '사용자', '평가', '의견', '질문', ''].forEach(h => fh.appendChild(el('th', {text:h})));
+    ugood.concat(ubad).sort((a, b) => b.m.userFeedback.at.localeCompare(a.m.userFeedback.at)).forEach(({ss, m}) => {
+      const tr = ft.insertRow(); tr.insertCell().textContent = kst(m.userFeedback.at); tr.insertCell().textContent = ss.userName;
+      tr.insertCell().appendChild(el('span', {class: m.userFeedback.rating === 'good' ? 'badge-g' : 'badge-b', text: m.userFeedback.rating === 'good' ? '좋아요' : '아쉬워요'}));
+      const c = tr.insertCell(); c.textContent = m.userFeedback.comment || '-'; c.style.whiteSpace = 'normal';
+      const q = questionBefore(ss, m.id); tr.insertCell().textContent = q.length > 24 ? q.slice(0, 24) + '…' : q;
+      tr.insertCell().appendChild(el('div', {class:'acts-cell'}, el('button', {text:'대화 보기', onclick: () => { logView.sid = ss.id; keepSid = true; document.querySelector('#tabs [data-v=_logs]').click(); }})));
+    });
+    if(!ugood.length && !ubad.length){ const c = ft.insertRow().insertCell(); c.colSpan = 6; c.className = 'empty'; c.textContent = '아직 사용자 평가가 없어요.'; }
+    box.append(el('div', {class:'card'}, el('h3', {text:`사용자 평가 (좋아요 ${ugood.length} · 아쉬워요 ${ubad.length})`}), el('div', {class:'table-wrap'}, ft)));
+  }
+
+  async function renderGuides(){
+    const box = $('custom'); box.innerHTML = '<div class="muted">지침을 불러오는 중이에요…</div>';
+    await loadGuides();
+    box.innerHTML = '';
+    const active = GUIDES.filter(g => g.active).length;
+    const ta = el('textarea', {rows:2, maxlength:600, placeholder:'새 지침을 직접 적을 수도 있어요. 예: 답변 첫 줄에 질문의 핵심 답을 먼저 말한다.', style:'width:100%'});
+    const add = el('button', {class:'cbtn primary', text:'지침 추가', onclick: async () => {
+      const t = ta.value.trim(); if(!t){ ta.focus(); return; }
+      try{ await api('/api/guidelines', {text: t, note: '관리자가 직접 추가'}); say('지침을 추가했어요. 다음 답변부터 적용돼요.'); renderGuides(); }
+      catch(e){ say('추가하지 못했어요.', true); } }});
+    box.append(
+      el('div', {class:'card', style:'margin-bottom:12px'},
+        el('h3', {text:`답변 지침 ${GUIDES.length}개 (적용 중 ${active}개)`}),
+        el('div', {class:'muted', text:'적용 중인 지침은 AI가 매번 답변할 때 함께 읽어요. 최근 30개까지만 적용돼요. 지침이 많을수록 답이 느려지고 요금이 늘어요.'}),
+        el('div', {class:'form', style:'margin-top:10px;display:flex;gap:8px;align-items:flex-end'}, ta, add)));
+    const t = el('table'); const h = t.insertRow(); ['상태', '지침', '출처 질문', '만든 날', ''].forEach(x => h.appendChild(el('th', {text:x})));
+    GUIDES.slice().reverse().forEach(g => {
+      const tr = t.insertRow();
+      tr.insertCell().appendChild(el('span', {class: g.active ? 'badge-f' : 'badge-n', text: g.active ? '적용 중' : '중지'}));
+      const c = tr.insertCell(); c.className = 'guide-text'; c.style.whiteSpace = 'normal'; c.style.maxWidth = '420px'; c.textContent = g.text;
+      const q = (g.source && g.source.question) || (g.source && g.source.note) || '-'; const cq = tr.insertCell(); cq.textContent = q.length > 30 ? q.slice(0, 30) + '…' : q;
+      tr.insertCell().textContent = kst(g.createdAt);
+      let arm = false;
+      const del = el('button', {text:'삭제'});
+      del.onclick = async () => { if(!arm){ arm = true; del.textContent = '정말 삭제?'; del.className = 'danger'; return; }
+        await api('/api/guidelines/delete', {id: g.id}).catch(() => {}); say('지침을 삭제했어요.'); renderGuides(); };
+      const edit = el('button', {text:'수정', onclick: () => {
+        const e = el('textarea', {rows:3, maxlength:600, style:'width:100%;background:#000;color:#fff;border:1px solid #444;border-radius:6px;padding:6px;font:inherit'}); e.value = g.text;
+        const ok = el('button', {text:'저장', onclick: async () => { const v = e.value.trim(); if(!v) return; await api('/api/guidelines/update', {id: g.id, text: v}).catch(() => {}); say('지침을 고쳤어요.'); renderGuides(); }});
+        c.innerHTML = ''; c.append(e, el('div', {class:'acts-cell', style:'margin-top:6px'}, ok)); }});
+      const tog = el('button', {text: g.active ? '중지' : '적용', onclick: async () => { await api('/api/guidelines/update', {id: g.id, active: !g.active}).catch(() => {}); renderGuides(); }});
+      tr.insertCell().appendChild(el('div', {class:'acts-cell'}, tog, edit, del));
+    });
+    if(!GUIDES.length){ const c = t.insertRow().insertCell(); c.colSpan = 5; c.className = 'empty'; c.textContent = '아직 지침이 없어요. 대화 기록에서 답변에 피드백을 남기고 "다음 답변부터 이 지침을 적용"을 체크해 보세요.'; }
+    box.append(el('div', {class:'table-wrap'}, t));
+  }
+
+  // ===== 화면 전환 (아크릴 스탠드 / 관리자) =====
+  document.querySelectorAll('.vtab').forEach(b => b.onclick = () => {
+    document.querySelectorAll('.vtab').forEach(x => x.classList.toggle('active', x === b));
+    const v = b.dataset.view;
+    $('shopView').hidden = v !== 'shop'; $('adminView').hidden = v !== 'admin';
+    refresh().then(() => { if(v === 'shop') renderShop(); else render(); });
+  });
+
+  // ===== 대화 기록 저장소 (이 브라우저의 로컬 스토리지) =====
+  const LOG_KEY = 'mint-chat-logs-v1', USER_KEY = 'mint-chat-user-v1';
+  const MAX_SESSIONS = 300;
+  const REPORT_REASONS = ['틀린 정보', '상품·가격 오류', '주문·배송 처리 오류', '질문과 다른 답변', '이해하기 어려움', '기타'];
+  const uid = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  const kst = iso => iso ? new Date(iso).toLocaleString('ko-KR', {timeZone:'Asia/Seoul', year:'2-digit', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', hour12:false}) : '-';
+  const kstDay = iso => new Date(iso).toLocaleDateString('sv-SE', {timeZone:'Asia/Seoul'});
+  const Logs = {
+    data: null,
+    load(){ try{ const d = JSON.parse(localStorage.getItem(LOG_KEY) || 'null'); this.data = d && Array.isArray(d.sessions) ? d : {sessions:[]}; }catch(e){ this.data = {sessions:[]}; } return this.data; },
+    save(){
+      if(this.data.sessions.length > MAX_SESSIONS) this.data.sessions = this.data.sessions.slice(-MAX_SESSIONS);
+      try{ localStorage.setItem(LOG_KEY, JSON.stringify(this.data)); return true; }
+      catch(e){
+        if(e && e.name === 'QuotaExceededError') alertLog('대화 기록을 저장할 공간이 부족해요. 관리자 > 대화 기록에서 내보낸 뒤 오래된 기록을 지워 주세요.');
+        else if(!this.warned){ this.warned = true; alertLog('이 화면에서는 대화 기록이 저장되지 않아요. 파일을 내려받아 크롬이나 엣지 브라우저로 열어 주세요.'); }
+        return false; }
+    },
+    session(id){ return this.data.sessions.find(x => x.id === id); },
+    msg(sid, mid){ const ss = this.session(sid); return ss && ss.messages.find(m => m.id === mid); }
+  };
+  function alertLog(t){ const e = document.createElement('div'); e.className = 'rep-done'; e.textContent = t; msgs.appendChild(e); }
+  Logs.load();
+  let USER = null; try{ USER = JSON.parse(localStorage.getItem(USER_KEY) || 'null'); }catch(e){}
+  let currentSid = null;
+
+  function setUser(name){
+    USER = {id: uid('U'), name: name.trim().slice(0, 20), createdAt: new Date().toISOString()};
+    try{ localStorage.setItem(USER_KEY, JSON.stringify(USER)); }catch(e){}
+    renderUser();
+  }
+  function renderUser(){
+    $('userLabel').textContent = USER ? `사용자: ${USER.name}` : '사용자: 아직 없음';
+    $('gate').hidden = !!USER;
+    inp.disabled = !USER; inp.placeholder = USER ? '아크릴 스탠드에 대해 물어보세요' : '먼저 위에서 이름을 입력해 주세요';
+  }
+  function startNewChat(){
+    currentSid = null; history.length = 0;
+    msgs.innerHTML = '<div class="ac-empty">새 대화를 시작했어요. 상품 버튼을 누르거나 질문해 보세요.</div>';
+    $('acList').hidden = false; $('acShowList').hidden = true;
+  }
+  function ensureSession(){
+    if(currentSid && Logs.session(currentSid)) return Logs.session(currentSid);
+    const ss = {id: uid('S'), userId: USER.id, userName: USER.name, startedAt: new Date().toISOString(), messages: []};
+    Logs.data.sessions.push(ss); currentSid = ss.id; return ss;
+  }
+
+  // ===== 아크릴 스탠드 상담 (AI) =====
+  const fmtDate = d => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d || ''); return m ? `${m[1]}년 ${Number(m[2])}월 ${Number(m[3])}일 (KST)` : (d || '-'); };
+  const settings = () => ({...AC_DEFAULT, ...(DATA.settings || {})});
+  const activeProducts = () => DATA.acryl_products.filter(p => p.visible !== '숨김').slice().sort((a,b) => (Number(a.order)||0) - (Number(b.order)||0));
+
+  function renderShop(){
+    const st = settings(); const t = st.title.trim(); const sp = t.lastIndexOf(' ');
+    const h = $('acTitle'); h.textContent = sp > 0 ? t.slice(0, sp) + ' ' : t;
+    if(sp > 0){ const em = document.createElement('span'); em.textContent = t.slice(sp + 1); h.appendChild(em); }
+    $('acSub').textContent = st.subtitle;
+    $('acSrcLink').textContent = st.sourceName; $('acSrcLink').href = /^https?:\/\//.test(st.sourceUrl) ? st.sourceUrl : '#';
+    $('acSrcDate').textContent = fmtDate(st.infoDate); $('acNotice').textContent = st.notice;
+    const list = activeProducts(); $('acCount').textContent = list.length; $('acChips').innerHTML = '';
+    list.forEach(p => { const c = document.createElement('button'); c.className = 'ac-chip'; c.textContent = p.name;
+      c.onclick = () => ask(`「${p.name}」 상품은 어떤 상품이고, 주문할 때 알아야 할 점은 뭐야?`); $('acChips').appendChild(c); });
+  }
+
+  const msgs = $('acMsgs');
+  function hideList(){ $('acList').hidden = true; $('acShowList').hidden = false; }
+  $('acShowList').onclick = () => { $('acList').hidden = false; $('acShowList').hidden = true; };
+  function addRow(who){
+    const e = msgs.querySelector('.ac-empty'); if(e) e.remove();
+    const row = document.createElement('div'); row.className = 'row ' + who;
+    if(who === 'bot'){ const ic = document.createElement('div'); ic.className = 'bot-icon'; ic.textContent = '🤖'; row.appendChild(ic); }
+    msgs.appendChild(row); return row;
+  }
+  function bubble(who, t){ const r = addRow(who); const b = document.createElement('div'); b.className = 'bubble'; b.textContent = t; r.appendChild(b); msgs.scrollTop = msgs.scrollHeight; return b; }
+
+  function receipt(r){
+    const row = document.createElement('div'); row.className = 'row bot'; const card = document.createElement('div'); card.className = 'receipt';
+    card.innerHTML = '<div class="rc-h">가상 주문 완료</div>';
+    [['주문번호', r.order_id], ['상품', r.product], ['수량', r.qty + '개'], ['예상 금액', Number(r.amount_krw).toLocaleString('ko-KR') + '원 (시작가 기준)'], ['배송', r.shipping.status + ' · 도착 예정 ' + r.shipping.eta]].forEach(([k,v]) => {
+      const d = document.createElement('div'); d.className = 'rc-l'; const bb = document.createElement('b'); bb.textContent = k; const sp = document.createElement('span'); sp.textContent = v; d.append(bb, sp); card.appendChild(d); });
+    const f = document.createElement('div'); f.className = 'rc-f'; f.textContent = '연습용 가상 주문이에요. 배송은 연습용으로 몇 분마다 한 단계씩 진행돼요.'; card.appendChild(f);
+    const btn = document.createElement('button'); btn.className = 'rc-btn'; btn.textContent = '배송 현황 보기';
+    btn.onclick = () => ask(`주문번호 ${r.order_id} 배송 현황 알려줘`); card.appendChild(btn);
+    row.appendChild(card); msgs.appendChild(row); msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  const history = []; let busy = false;
+
+  // AI 답변 말풍선 + 신고 버튼
+  function botAnswer(text, sid, mid){
+    const r = addRow('bot'); const col = document.createElement('div'); col.className = 'bot-col';
+    const b = document.createElement('div'); b.className = 'bubble'; b.textContent = text; col.appendChild(b);
+    if(sid && mid) col.appendChild(actionsUI(sid, mid));
+    r.appendChild(col); msgs.scrollTop = msgs.scrollHeight; return b;
+  }
+  // 답변 아래 버튼 줄: 좋아요 / 아쉬워요 / 신고
+  function actionsUI(sid, mid){
+    const wrap = document.createElement('div'); wrap.className = 'act-wrap';
+    const bar = document.createElement('div'); bar.className = 'act-bar';
+    const good = document.createElement('button'); good.className = 'act-btn'; good.textContent = '좋아요';
+    const bad = document.createElement('button'); bad.className = 'act-btn'; bad.textContent = '아쉬워요';
+    const note = document.createElement('div'); note.className = 'act-note';
+    const paint = () => {
+      const m = Logs.msg(sid, mid); const f = m && m.userFeedback;
+      good.classList.toggle('on', !!f && f.rating === 'good'); bad.classList.toggle('on', !!f && f.rating === 'bad');
+      note.textContent = f ? (f.rating === 'good' ? '평가 고마워요.' : '의견 고마워요. 관리자가 확인할게요.') + (f.comment ? ` 남긴 의견: ${f.comment}` : '') : '';
+    };
+    const saveFb = (rating, comment) => {
+      const m = Logs.msg(sid, mid); if(!m) return;
+      m.userFeedback = {rating, comment: (comment || '').trim(), at: new Date().toISOString(), by: USER ? USER.name : '-'};
+      Logs.save(); paint();
+    };
+    let form = null;
+    const openForm = (rating) => {
+      if(form) form.remove();
+      form = document.createElement('div'); form.className = 'fb-form';
+      const lb = document.createElement('div'); lb.textContent = rating === 'good' ? '어떤 점이 좋았나요? (선택)' : '어떤 점이 아쉬웠나요? (선택)';
+      const ta = document.createElement('textarea'); ta.rows = 2; ta.maxLength = 300;
+      ta.placeholder = rating === 'good' ? '예: 설명이 쉬웠어요' : '예: 가격을 더 자세히 알려주면 좋겠어요';
+      const prev = Logs.msg(sid, mid); if(prev && prev.userFeedback && prev.userFeedback.rating === rating) ta.value = prev.userFeedback.comment || '';
+      const acts = document.createElement('div'); acts.className = 'r-acts';
+      const skip = document.createElement('button'); skip.textContent = '의견 없이 보내기';
+      const go = document.createElement('button'); go.className = 'go'; go.textContent = '보내기';
+      skip.onclick = () => { saveFb(rating, ''); form.remove(); form = null; };
+      go.onclick = () => { saveFb(rating, ta.value); form.remove(); form = null; };
+      acts.append(skip, go); form.append(lb, ta, acts); wrap.insertBefore(form, note);
+      ta.focus();
+    };
+    good.onclick = () => openForm('good');
+    bad.onclick = () => openForm('bad');
+    const rep = reportUI(sid, mid);
+    bar.append(good, bad, rep);
+    wrap.append(bar, note); paint();
+    return wrap;
+  }
+
+  function reportUI(sid, mid){
+    const box = document.createElement('div');
+    const m = Logs.msg(sid, mid);
+    if(m && m.report){ box.className = 'rep-done'; box.textContent = `신고 접수됨: ${m.report.reason}`; return box; }
+    const btn = document.createElement('button'); btn.className = 'rep-btn'; btn.textContent = '신고하기';
+    btn.onclick = () => {
+      const f = document.createElement('div'); f.className = 'rep-form';
+      const sel = document.createElement('select'); REPORT_REASONS.forEach(x => { const o = document.createElement('option'); o.textContent = x; sel.appendChild(o); });
+      const ta = document.createElement('textarea'); ta.rows = 2; ta.maxLength = 300; ta.placeholder = '무엇이 잘못됐는지 적어 주세요 (선택)';
+      const acts = document.createElement('div'); acts.className = 'r-acts';
+      const no = document.createElement('button'); no.textContent = '취소'; no.onclick = () => { f.replaceWith(btn); };
+      const go = document.createElement('button'); go.className = 'go'; go.textContent = '신고하기';
+      go.onclick = () => {
+        const msg = Logs.msg(sid, mid); if(!msg) return;
+        msg.report = {reason: sel.value, note: ta.value.trim(), at: new Date().toISOString(), by: USER ? USER.name : '-'};
+        Logs.save();
+        const done = document.createElement('div'); done.className = 'rep-done'; done.textContent = `신고 접수됨: ${sel.value}. 관리자가 확인할게요.`;
+        f.replaceWith(done);
+      };
+      const lb = document.createElement('div'); lb.textContent = '어떤 점이 잘못됐나요?';
+      acts.append(no, go); f.append(lb, sel, ta, acts); btn.replaceWith(f);
+    };
+    box.appendChild(btn); return box;
+  }
+
+  async function ask(text){
+    text = String(text || '').trim(); if(!text || busy) return;
+    if(!USER){ $('gate').hidden = false; $('gateName').focus(); return; }
+    busy = true; hideList(); bubble('user', text);
+    const ss = ensureSession();
+    ss.messages.push({id: uid('M'), role:'user', text, at: new Date().toISOString()}); ss.updatedAt = new Date().toISOString(); Logs.save();
+    const wait = bubble('bot', '답변을 준비하고 있어요…'); const waitRow = wait.parentElement;
+    history.push({role:'user', content:text});
+    let answer, isErr = false, rc = null;
+    try{
+      const r = await api('/api/chat', {messages: history});
+      if(r.error){ history.pop(); answer = r.error; isErr = true; }
+      else{ answer = r.text; rc = r.receipt || null; history.push({role:'assistant', content:r.text}); }
+    }catch(e){ history.pop(); answer = '서버와 연결되지 않았어요. 검은 서버 창이 켜져 있는지 확인하세요.'; isErr = true; }
+    const mid = uid('M');
+    ss.messages.push({id: mid, role:'bot', text: answer, at: new Date().toISOString(), error: isErr || undefined, receipt: rc || undefined});
+    ss.updatedAt = new Date().toISOString(); Logs.save();
+    waitRow.remove();
+    botAnswer(answer, ss.id, mid);
+    if(rc){ receipt(rc); await refresh(); }
+    busy = false; sendBtn.disabled = !inp.value.trim(); msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  const inp = $('acInput'), sendBtn = $('acSend');
+  function send(){ const t = inp.value.trim(); if(!t || busy) return; inp.value = ''; sendBtn.disabled = true; ask(t); }
+  inp.addEventListener('input', () => { sendBtn.disabled = !inp.value.trim(); if(inp.value.trim()) hideList(); });
+  inp.addEventListener('keydown', e => { if(e.key === 'Enter' && !e.shiftKey && !e.isComposing){ e.preventDefault(); send(); } });
+  sendBtn.onclick = send;
+  bindSubmit($('gate'), () => { const n = $('gateName').value.trim(); if(!n){ $('gateName').focus(); $('gateName').placeholder = '이름이나 닉네임을 먼저 적어 주세요'; return; } setUser(n); startNewChat(); inp.focus(); });
+  $('changeUser').onclick = () => { USER = null; try{ localStorage.removeItem(USER_KEY); }catch(e){} $('gateName').value = ''; renderUser(); startNewChat(); $('gateName').focus(); };
+  $('newChat').onclick = () => { if(busy) return; startNewChat(); };
+
+  (async () => {
+    try{
+      const b = await api('/api/bootstrap');
+      SCHEMA = b.schema; AC_DEFAULT = b.defaults; DATA = b.data;
+      if(!b.hasKey) $('headSub').textContent = 'API 키가 아직 없어요. 폴더의 .env 파일에 키를 넣고 서버를 다시 실행하세요.';
+      else $('headSub').textContent = `내 컴퓨터에서 실행 중이에요. 모델: ${b.model}. 데이터는 폴더 안 data.json에 저장돼요.`;
+      renderShop(); renderUser(); render();
+    }catch(e){
+      document.body.innerHTML = '<p style="padding:40px;color:#fff;font-size:16px;line-height:1.8">서버에 연결되지 않았어요.<br>폴더의 "start.bat"을 더블클릭해서 서버를 켠 뒤, 이 페이지를 새로고침하세요.</p>';
+    }
+  })();
+</script>
+</body>
+</html>
